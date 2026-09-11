@@ -20,8 +20,20 @@ export default function OrderBranchPoint() {
   };
 
   return (
-    <section id="order-branch-point" className="py-20 bg-white">
+    <section id="order-branch-point" className="py-12 sm:py-16 bg-white">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-6">
+          <button
+            onClick={() => {
+              setActiveView('landing');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors"
+          >
+            &larr; Back to Overview
+          </button>
+        </div>
+
         <div className="text-center max-w-2xl mx-auto mb-12">
           <span className="text-xs font-bold uppercase tracking-wider text-orange-600 bg-orange-50 border border-orange-200 px-3 py-1 rounded-full inline-flex items-center gap-1.5">
             <Sparkles className="w-3.5 h-3.5" />

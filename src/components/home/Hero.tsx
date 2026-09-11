@@ -9,10 +9,7 @@ export default function Hero() {
 
   const handleStartOrder = () => {
     setActiveView('branch');
-    const branchEl = document.getElementById('order-branch-point');
-    if (branchEl) {
-      branchEl.scrollIntoView({ behavior: 'smooth' });
-    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (

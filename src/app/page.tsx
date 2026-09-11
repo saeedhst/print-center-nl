@@ -34,22 +34,15 @@ export default function Home() {
         ) : activeView === 'confirmation' ? (
           <OrderConfirmationView />
         ) : activeView === 'portfolio' ? (
-          <div className="space-y-6">
-            <BenchmarkPortfolio />
-            <OrderBranchPoint />
-          </div>
+          <BenchmarkPortfolio />
         ) : activeView === 'reviews' ? (
-          <div className="space-y-6">
-            <ReviewsSection />
-            <OrderBranchPoint />
-          </div>
+          <ReviewsSection />
         ) : activeView === 'admin' ? (
           <OrderTable />
         ) : (
           /* Default: 'landing' */
           <div className="space-y-0">
             <Hero />
-            <OrderBranchPoint />
             <HowItWorks />
             <BenchmarkPortfolio />
             <ReviewsSection />
