@@ -13,25 +13,6 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b border-slate-200">
-      {/* Top micro-announcement banner */}
-      <div className="bg-slate-50 border-b border-slate-200/80 text-slate-700 text-xs py-1.5 px-4 font-medium">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="flex h-2 w-2 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-500 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
-            </span>
-            <span>
-              <strong>Local Randstad Hubs:</strong> Dispatched in just <strong>1 working day</strong> across Haarlem, Amsterdam &amp; Utrecht.
-            </span>
-          </div>
-
-          <div className="hidden sm:flex items-center gap-2 text-slate-500 text-[11px]">
-            <span>Fast turnaround &bull; Industrial quality &bull; Transparent pricing</span>
-          </div>
-        </div>
-      </div>
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Brand Logo */}

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useAppStore } from '@/lib/store';
-import { ArrowRight, Clock, ShieldCheck, Tag, Sparkles, CheckCircle2, Box } from 'lucide-react';
+import { ArrowRight, Clock, ShieldCheck, Tag, Sparkles, CheckCircle2, Box, Truck } from 'lucide-react';
 
 export default function Hero() {
   const { setActiveView } = useAppStore();
@@ -18,12 +18,31 @@ export default function Hero() {
       <div className="absolute inset-0 bg-gradient-to-b from-slate-50/70 via-white to-white pointer-events-none" />
 
       <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        {/* Top Local Hub Pill */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold tracking-wide mb-6 shadow-xs">
-          <span className="w-2 h-2 rounded-full bg-orange-600"></span>
-          <span>Haarlem &bull; Amsterdam &bull; Utrecht</span>
-          <span className="text-slate-300">|</span>
-          <span className="text-slate-500 font-normal">Next-day local courier</span>
+        {/* Local Randstad Hubs Card */}
+        <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200 shadow-soft max-w-2xl mx-auto mb-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-left">
+          <div className="flex items-center gap-3.5">
+            <div className="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center shrink-0">
+              <Truck className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="flex h-2 w-2 relative">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-500 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
+                </span>
+                <span className="font-extrabold text-sm text-slate-900">
+                  Local Randstad Hubs
+                </span>
+              </div>
+              <p className="text-xs text-slate-600 mt-0.5">
+                Dispatched in just <strong>1 working day</strong> across Haarlem, Amsterdam &amp; Utrecht.
+              </p>
+            </div>
+          </div>
+
+          <div className="w-full sm:w-auto text-[11px] font-medium text-slate-500 border-t sm:border-t-0 sm:border-l border-slate-200 pt-2 sm:pt-0 sm:pl-4 text-center sm:text-left shrink-0">
+            Fast turnaround &bull; Industrial quality &bull; Transparent pricing
+          </div>
         </div>
 
         {/* Required Headline */}
