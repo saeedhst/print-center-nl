@@ -1,112 +1,144 @@
 'use client';
 
 import React from 'react';
-import { Box, MapPin, Shield, Truck, CreditCard, Sparkles, Phone, Mail } from 'lucide-react';
+import { Box, MapPin, ShieldCheck, Clock, CheckCircle2, Truck } from 'lucide-react';
+import { useAppStore } from '@/lib/store';
 
 export default function Footer() {
+  const { setActiveView, setOrderType } = useAppStore();
+
   return (
-    <footer className="border-t border-slate-800 bg-slate-950 text-slate-400 text-sm mt-24">
+    <footer className="border-t border-slate-200 bg-slate-50 text-slate-600 text-xs mt-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
-          {/* Col 1: Brand & Dutch Registration */}
+          {/* Brand Col */}
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-white">
-                <Box className="w-5 h-5" />
+              <div className="w-8 h-8 rounded-xl bg-slate-900 flex items-center justify-center text-white">
+                <Box className="w-4 h-4" />
               </div>
-              <span className="text-xl font-bold text-white tracking-tight">PrintLab NL</span>
-              <span className="text-xs px-2 py-0.5 rounded bg-orange-500/20 text-orange-400 font-semibold border border-orange-500/30">
-                Randstad Hub
+              <span className="text-base font-extrabold text-slate-900 tracking-tight">PrintLab NL</span>
+              <span className="text-[10px] px-2 py-0.5 rounded bg-slate-200 text-slate-700 font-bold">
+                Haarlem • Amsterdam • Utrecht
               </span>
             </div>
-            <p className="text-sm leading-relaxed text-slate-400 pr-6">
-              Precision on-demand 3D printing and professional CAD engineering service localized in the Netherlands. Rapid turnaround with Bambu Lab multi-material AMS and Formlabs stereolithography printing fleets.
+            <p className="text-xs text-slate-500 leading-relaxed max-w-sm">
+              Localized on-demand 3D printing and CAD design service. Processed and dispatched in just 1 working day with industrial-grade precision and instant transparent pricing.
             </p>
-            <div className="pt-2 text-xs text-slate-500 space-y-1">
-              <div><strong>KvK (Chamber of Commerce):</strong> 89234812 (Amsterdam)</div>
-              <div><strong>BTW-Id (VAT):</strong> NL89234812B01</div>
-              <div><strong>Registered Office:</strong> Science Park 402, 1098 XH Amsterdam, Nederland</div>
+            <div className="text-[11px] text-slate-400 space-y-1">
+              <div><strong>KvK (Chamber of Commerce):</strong> 89234812</div>
+              <div><strong>BTW (VAT):</strong> NL89234812B01</div>
+              <div><strong>Production Hubs:</strong> Spaarne (Haarlem) &bull; Science Park (Amsterdam) &bull; Science Park (Utrecht)</div>
             </div>
           </div>
 
-          {/* Col 2: Priority Delivery Hubs */}
+          {/* Rapid Delivery Hubs */}
           <div className="space-y-3">
-            <h4 className="text-white font-semibold flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-orange-500" />
-              <span>Randstad Delivery</span>
+            <h4 className="font-bold text-slate-900 flex items-center gap-1.5">
+              <MapPin className="w-3.5 h-3.5 text-orange-600" />
+              <span>1-Day Delivery Zones</span>
             </h4>
             <ul className="space-y-2 text-xs">
-              <li className="flex items-center gap-2 text-slate-300">
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-500"></span>
-                <strong>Amsterdam:</strong> Same-day courier / Pick-up
+              <li className="flex items-center gap-2 text-slate-700">
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-600"></span>
+                <strong>Haarlem:</strong> Direct courier / pickup
               </li>
-              <li className="flex items-center gap-2 text-slate-300">
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-500"></span>
-                <strong>Utrecht:</strong> Same-day cargo bike / Science Park hub
+              <li className="flex items-center gap-2 text-slate-700">
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-600"></span>
+                <strong>Amsterdam:</strong> Same-day &amp; 24h courier
               </li>
-              <li className="flex items-center gap-2 text-slate-300">
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-500"></span>
-                <strong>The Hague (Den Haag):</strong> Next-day express
+              <li className="flex items-center gap-2 text-slate-700">
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-600"></span>
+                <strong>Utrecht:</strong> 24h urban courier &amp; hub
               </li>
-              <li className="flex items-center gap-2 text-slate-300">
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-500"></span>
-                <strong>Rotterdam &amp; Delft:</strong> Campus pickup / Courier
-              </li>
-              <li className="flex items-center gap-2 text-slate-400">
-                <span className="w-1.5 h-1.5 rounded-full bg-slate-600"></span>
-                Rest of NL &amp; Flanders: 1–2 days PostNL
+              <li className="flex items-center gap-2 text-slate-500">
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                Rest of Netherlands: PostNL / DHL
               </li>
             </ul>
           </div>
 
-          {/* Col 3: Materials & Specs */}
+          {/* Starting Options */}
           <div className="space-y-3">
-            <h4 className="text-white font-semibold flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-amber-500" />
-              <span>Capabilities</span>
-            </h4>
-            <ul className="space-y-1.5 text-xs">
-              <li>• Bambu Lab AMS 4-Color Multi-Filament</li>
-              <li>• Formlabs SLA High-Precision Resin</li>
-              <li>• Tough PETG for functional mechanical jigs</li>
-              <li>• Heat-resistant engineering ABS (95°C)</li>
-              <li>• Shore 95A Flexible Elastic TPU</li>
-              <li>• Tolerances down to ±0.05 mm</li>
+            <h4 className="font-bold text-slate-900">Get Started</h4>
+            <ul className="space-y-2 text-xs">
+              <li>
+                <button
+                  onClick={() => {
+                    setOrderType('DIRECT_PRINT');
+                    setActiveView('order-a');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  className="hover:text-orange-600 transition-colors text-left"
+                >
+                  &bull; Option A: Upload 3D File (Instant Quote)
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => {
+                    setOrderType('DESIGN_AND_PRINT');
+                    setActiveView('order-b');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  className="hover:text-orange-600 transition-colors text-left"
+                >
+                  &bull; Option B: Need a Design (24h Quote)
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => {
+                    setActiveView('portfolio');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  className="hover:text-orange-600 transition-colors text-left"
+                >
+                  &bull; Sample Gallery &amp; Benchmarks
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => {
+                    setActiveView('reviews');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  className="hover:text-orange-600 transition-colors text-left"
+                >
+                  &bull; Customer Satisfaction Reviews
+                </button>
+              </li>
             </ul>
           </div>
 
-          {/* Col 4: Trust, SLA & Payments */}
+          {/* Guarantees & Payments */}
           <div className="space-y-3">
-            <h4 className="text-white font-semibold flex items-center gap-2">
-              <Shield className="w-4 h-4 text-emerald-500" />
-              <span>SLA &amp; Guarantee</span>
+            <h4 className="font-bold text-slate-900 flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Service Guarantees</span>
             </h4>
-            <div className="text-xs space-y-2 text-slate-400">
-              <p>
-                <strong>1-Day CAD Review:</strong> All custom design intakes receive engineer review and fixed quote within 24h.
-              </p>
-              <p>
-                <strong>Reprint Guarantee:</strong> In case of mechanical dimension defect or print failure, immediate free reprint.
-              </p>
-              <div className="pt-2 border-t border-slate-800">
-                <p className="text-[11px] text-slate-500 mb-1 font-medium">Supported Payment Methods:</p>
-                <div className="flex flex-wrap gap-1.5 text-[11px] text-slate-300">
-                  <span className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono">iDEAL</span>
-                  <span className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono">Bancontact</span>
-                  <span className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono">Credit Card</span>
-                  <span className="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono">Klarna</span>
-                </div>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              If your print doesn&apos;t match mechanical tolerances or has a print defect, we provide an immediate free reprint.
+            </p>
+            <div className="pt-2 border-t border-slate-200">
+              <span className="text-[10px] font-semibold text-slate-400 block mb-1.5">Supported Payments:</span>
+              <div className="flex flex-wrap gap-1.5 text-[11px]">
+                <span className="px-2 py-0.5 rounded bg-white border border-slate-200 font-medium text-slate-700">iDEAL</span>
+                <span className="px-2 py-0.5 rounded bg-white border border-slate-200 font-medium text-slate-700">Credit Card</span>
+                <span className="px-2 py-0.5 rounded bg-white border border-slate-200 font-medium text-slate-700">Bancontact</span>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="mt-12 pt-6 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-          <p>© {new Date().getFullYear()} PrintLab NL B.V. • All rights reserved. Handcrafted in the Randstad.</p>
-          <div className="flex items-center gap-6">
-            <a href="#privacy" className="hover:text-slate-300 transition-colors">Privacy Policy</a>
-            <a href="#terms" className="hover:text-slate-300 transition-colors">Terms of Service (Algemene Voorwaarden)</a>
-            <a href="#iso" className="hover:text-slate-300 transition-colors">ISO 9001 Compliant Fleet</a>
+        <div className="mt-12 pt-6 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
+          <p>&copy; {new Date().getFullYear()} PrintLab NL &bull; All rights reserved. Locally printed in North Holland &amp; Utrecht.</p>
+          <div className="flex items-center gap-4 text-slate-500">
+            <span>Fast Turnaround</span>
+            <span>&bull;</span>
+            <span>Fair Transparent Pricing</span>
+            <span>&bull;</span>
+            <span>Industrial Quality</span>
           </div>
         </div>
       </div>

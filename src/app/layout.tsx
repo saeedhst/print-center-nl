@@ -2,18 +2,17 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'PrintLab NL | Rapid 3D Printing & CAD Design (Amsterdam • Utrecht • Den Haag)',
+  title: 'PrintLab NL | Fast On-Demand 3D Printing (Haarlem • Amsterdam • Utrecht)',
   description:
-    'On-demand 3D printing and CAD engineering service in the Netherlands. Instant client-side STL analysis, live quotation, multi-material Bambu Lab AMS fleet, and same-day Randstad bike courier.',
+    'On-demand 3D printing and CAD engineering service. Dispatched in just 1 working day across Haarlem, Amsterdam, and Utrecht. Instant 3D file quotes and 24-hour custom design services.',
   keywords: [
-    '3D printing Netherlands',
-    '3D printen Amsterdam',
-    '3D printen Utrecht',
-    'Den Haag 3D printing',
+    '3D printing Haarlem',
+    '3D printing Amsterdam',
+    '3D printing Utrecht',
+    '3D printen Nederland',
     'STL instant quote',
-    'CAD design service NL',
-    'Bambu Lab AMS 3D printing',
-    'Student discount 3D printen',
+    'CAD design quote',
+    'Rapid prototyping Randstad',
   ],
 };
 
@@ -23,8 +22,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark h-full antialiased">
-      <body className="min-h-full flex flex-col bg-[#090d16] text-slate-100 selection:bg-orange-500 selection:text-white">
+    <html lang="en" className="h-full light antialiased">
+      <body className="min-h-full flex flex-col bg-white text-slate-900 selection:bg-orange-500 selection:text-white">
         {children}
       </body>
     </html>

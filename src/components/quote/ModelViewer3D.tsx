@@ -3,16 +3,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { useAppStore } from '@/lib/store';
-import { MATERIALS } from '@/lib/pricing';
+import { SIMPLE_MATERIALS } from '@/lib/pricing';
 import { PRESET_MODELS, calculateGeometryVolumeCm3, getBoundingBoxDimensions } from '@/lib/meshUtils';
 import {
   RotateCcw,
   Maximize2,
   Box,
-  Eye,
-  Grid,
-  Sparkles,
   Layers,
+  Grid,
   Scale,
 } from 'lucide-react';
 
@@ -21,11 +19,12 @@ export default function ModelViewer3D() {
   const {
     activeGeometry,
     fileName,
-    dimensions,
-    volumeCm3,
+    baseDimensions,
+    scaleFactor,
     material,
+    colorOption,
+    priceBreakdown,
     setModelGeometry,
-    selectedPresetId,
   } = useAppStore();
 
   const [isWireframe, setIsWireframe] = useState(false);
@@ -36,13 +35,12 @@ export default function ModelViewer3D() {
   const sceneRef = useRef<THREE.Scene | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const meshRef = useRef<THREE.Mesh | null>(null);
-  const wireframeMeshRef = useRef<THREE.LineSegments | null>(null);
   const bboxBoxRef = useRef<THREE.BoxHelper | null>(null);
   const controlsRef = useRef<any>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const reqIdRef = useRef<number | null>(null);
 
-  // Initialize preset model if no geometry yet loaded
+  // Initialize default geometry if none loaded
   useEffect(() => {
     if (!activeGeometry) {
       const preset = PRESET_MODELS[0];
@@ -53,22 +51,22 @@ export default function ModelViewer3D() {
     }
   }, [activeGeometry, setModelGeometry]);
 
-  // Three.js Scene Setup
+  // Three.js Scene Setup (Strict Light Mode)
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    // Scene
+    // Scene with soft studio light background
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color('#0b1120');
+    scene.background = new THREE.Color('#f8fafc'); // Soft neutral light slate
     sceneRef.current = scene;
 
     // Camera
     const camera = new THREE.PerspectiveCamera(
-      45,
+      42,
       container.clientWidth / container.clientHeight,
       1,
-      2000
+      2500
     );
     camera.position.set(130, 110, 160);
     cameraRef.current = camera;
@@ -83,21 +81,21 @@ export default function ModelViewer3D() {
     container.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
-    // Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+    // Studio Lights for clean light mode
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.1);
     scene.add(ambientLight);
 
-    const dirLight1 = new THREE.DirectionalLight(0xffffff, 1.2);
-    dirLight1.position.set(100, 200, 100);
-    dirLight1.castShadow = true;
-    scene.add(dirLight1);
+    const keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
+    keyLight.position.set(120, 220, 140);
+    keyLight.castShadow = true;
+    scene.add(keyLight);
 
-    const dirLight2 = new THREE.DirectionalLight(0xff9955, 0.4);
-    dirLight2.position.set(-100, -50, -100);
-    scene.add(dirLight2);
+    const fillLight = new THREE.DirectionalLight(0xf1f5f9, 0.6);
+    fillLight.position.set(-120, 80, -100);
+    scene.add(fillLight);
 
-    // Build Plate (Bambu 256x256 mm bed simulation)
-    const gridHelper = new THREE.GridHelper(256, 32, 0xff5500, 0x1e293b);
+    // Build Plate Grid (Light mode friendly 256x256mm plate)
+    const gridHelper = new THREE.GridHelper(256, 32, 0xe2e8f0, 0xf1f5f9);
     gridHelper.position.y = 0;
     gridHelper.name = 'buildGrid';
     scene.add(gridHelper);
@@ -111,7 +109,7 @@ export default function ModelViewer3D() {
       controlsInstance = new OrbitControls(camera, renderer.domElement);
       controlsInstance.enableDamping = true;
       controlsInstance.dampingFactor = 0.05;
-      controlsInstance.maxDistance = 600;
+      controlsInstance.maxDistance = 650;
       controlsInstance.minDistance = 20;
       controlsInstance.target.set(0, 20, 0);
       controlsRef.current = controlsInstance;
@@ -123,7 +121,7 @@ export default function ModelViewer3D() {
 
       if (controlsRef.current) {
         controlsRef.current.autoRotate = isAutoRotate;
-        controlsRef.current.autoRotateSpeed = 1.8;
+        controlsRef.current.autoRotateSpeed = 1.5;
         controlsRef.current.update();
       }
 
@@ -131,7 +129,6 @@ export default function ModelViewer3D() {
     };
     animate();
 
-    // Resize Observer
     const handleResize = () => {
       if (!container || !camera || !renderer) return;
       camera.aspect = container.clientWidth / container.clientHeight;
@@ -150,7 +147,7 @@ export default function ModelViewer3D() {
     };
   }, [isAutoRotate]);
 
-  // Toggle Grid visibility
+  // Toggle Grid
   useEffect(() => {
     if (!sceneRef.current) return;
     const grid = sceneRef.current.getObjectByName('buildGrid');
@@ -159,12 +156,12 @@ export default function ModelViewer3D() {
     }
   }, [showBuildGrid]);
 
-  // Update Geometry and Material when store changes
+  // Update Mesh & Apply Live Scaling
   useEffect(() => {
     const scene = sceneRef.current;
     if (!scene || !activeGeometry) return;
 
-    // Remove old mesh
+    // Clean up old mesh
     if (meshRef.current) {
       scene.remove(meshRef.current);
       meshRef.current.geometry.dispose();
@@ -182,52 +179,37 @@ export default function ModelViewer3D() {
       bboxBoxRef.current = null;
     }
 
-    // Material color & finish mapping
-    const matConfig = MATERIALS[material] || MATERIALS.PLA;
-    let colorHex = 0xf97316; // orange
+    // Material Color & Finish in Light Mode
+    let colorHex = 0x0f172a; // clean slate
     let roughness = 0.4;
     let metalness = 0.1;
-    let opacity = 1.0;
-    let transparent = false;
 
-    if (material === 'PLA') {
-      colorHex = 0xf8fafc; // Clean white/ivory PLA
-      roughness = 0.5;
-    } else if (material === 'PETG') {
-      colorHex = 0xff6600; // Translucent Dutch safety orange
-      roughness = 0.25;
-      metalness = 0.2;
-    } else if (material === 'ABS') {
-      colorHex = 0x2563eb; // Industrial technical blue
-      roughness = 0.6;
-    } else if (material === 'TPU') {
-      colorHex = 0x8b5cf6; // Vibrant flexible violet
-      roughness = 0.7;
+    if (material === 'STANDARD') {
+      colorHex = colorOption === 'MULTI' ? 0xea580c : 0x334155; // Slate dark or orange
+      roughness = 0.45;
+    } else if (material === 'TOUGH') {
+      colorHex = 0xea580c; // Vibrant Dutch orange
+      roughness = 0.3;
+      metalness = 0.15;
     } else if (material === 'RESIN') {
-      colorHex = 0x94a3b8; // Satin slate gray ultra-detail
+      colorHex = 0x0284c7; // Technical cobalt blue
       roughness = 0.15;
-      metalness = 0.4;
+      metalness = 0.3;
     }
 
-    const threeMaterial = new THREE.MeshStandardMaterial({
+    const matObj = new THREE.MeshStandardMaterial({
       color: colorHex,
       roughness,
       metalness,
       wireframe: isWireframe,
-      transparent,
-      opacity,
       side: THREE.DoubleSide,
     });
 
-    // Center geometry on the build plate (bottom sits at y=0)
+    // Center geometry at origin and place bottom on y=0
     activeGeometry.computeBoundingBox();
     const bbox = activeGeometry.boundingBox;
     if (bbox) {
-      const center = new THREE.Vector3();
-      bbox.getCenter(center);
-      activeGeometry.center(); // centers at (0,0,0)
-
-      // Recompute bbox to place on build bed
+      activeGeometry.center();
       activeGeometry.computeBoundingBox();
       const updatedBox = activeGeometry.boundingBox;
       if (updatedBox) {
@@ -236,53 +218,57 @@ export default function ModelViewer3D() {
       }
     }
 
-    const mesh = new THREE.Mesh(activeGeometry, threeMaterial);
+    const mesh = new THREE.Mesh(activeGeometry, matObj);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
+
+    // Apply Live Scale Factor
+    const validScale = Math.max(0.1, Math.min(3.0, scaleFactor || 1.0));
+    mesh.scale.set(validScale, validScale, validScale);
+
     scene.add(mesh);
     meshRef.current = mesh;
 
-    // Add bounding box helper
-    const bboxHelper = new THREE.BoxHelper(mesh, 0xff7700);
+    // Bounding Box Helper
+    const bboxHelper = new THREE.BoxHelper(mesh, 0xea580c);
     scene.add(bboxHelper);
     bboxBoxRef.current = bboxHelper;
 
-    // Reset camera target
     if (controlsRef.current) {
-      controlsRef.current.target.set(0, dimensions.z / 2, 0);
+      controlsRef.current.target.set(0, (priceBreakdown.scaledDimensions.z || 30) / 2, 0);
     }
-  }, [activeGeometry, material, isWireframe, dimensions.z]);
+  }, [activeGeometry, material, colorOption, isWireframe, scaleFactor, priceBreakdown.scaledDimensions.z]);
 
   const handleResetCamera = () => {
     if (!cameraRef.current || !controlsRef.current) return;
     cameraRef.current.position.set(130, 110, 160);
-    controlsRef.current.target.set(0, dimensions.z / 2, 0);
+    controlsRef.current.target.set(0, 20, 0);
     controlsRef.current.update();
   };
 
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-950 overflow-hidden relative shadow-2xl flex flex-col">
-      {/* Top Status Bar */}
-      <div className="px-4 py-3 bg-slate-900/80 border-b border-slate-800 flex items-center justify-between z-10">
+    <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden relative shadow-soft flex flex-col">
+      {/* Top Toolbar */}
+      <div className="px-4 py-3 bg-slate-50/80 border-b border-slate-200 flex items-center justify-between z-10">
         <div className="flex items-center gap-2">
           <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="text-xs font-semibold text-white tracking-wide truncate max-w-[200px] sm:max-w-xs">
+          <span className="text-xs font-bold text-slate-800 tracking-tight truncate max-w-[200px] sm:max-w-xs">
             {fileName || '3D_Model.stl'}
           </span>
-          <span className="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-orange-400 font-mono border border-slate-700">
-            {material}
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-white text-orange-700 border border-slate-200 font-mono">
+            {material} &bull; {scaleFactor * 100}% Scale
           </span>
         </div>
 
-        {/* Action Controls */}
+        {/* Viewport Toggles */}
         <div className="flex items-center gap-1.5">
           <button
             onClick={() => setIsWireframe(!isWireframe)}
             title="Toggle Wireframe"
             className={`p-1.5 rounded-lg text-xs font-medium border transition-colors ${
               isWireframe
-                ? 'bg-orange-500/20 text-orange-400 border-orange-500/40'
-                : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white'
+                ? 'bg-orange-50 text-orange-700 border-orange-300'
+                : 'bg-white text-slate-600 border-slate-200 hover:text-slate-900'
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
@@ -293,8 +279,8 @@ export default function ModelViewer3D() {
             title="Toggle Auto Rotation"
             className={`p-1.5 rounded-lg text-xs font-medium border transition-colors ${
               isAutoRotate
-                ? 'bg-orange-500/20 text-orange-400 border-orange-500/40'
-                : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white'
+                ? 'bg-orange-50 text-orange-700 border-orange-300'
+                : 'bg-white text-slate-600 border-slate-200 hover:text-slate-900'
             }`}
           >
             <RotateCcw className="w-3.5 h-3.5" />
@@ -302,11 +288,11 @@ export default function ModelViewer3D() {
 
           <button
             onClick={() => setShowBuildGrid(!showBuildGrid)}
-            title="Toggle 256mm Build Plate Grid"
+            title="Toggle Build Grid"
             className={`p-1.5 rounded-lg text-xs font-medium border transition-colors ${
               showBuildGrid
-                ? 'bg-orange-500/20 text-orange-400 border-orange-500/40'
-                : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white'
+                ? 'bg-orange-50 text-orange-700 border-orange-300'
+                : 'bg-white text-slate-600 border-slate-200 hover:text-slate-900'
             }`}
           >
             <Grid className="w-3.5 h-3.5" />
@@ -314,37 +300,39 @@ export default function ModelViewer3D() {
 
           <button
             onClick={handleResetCamera}
-            title="Reset Camera Angle"
-            className="p-1.5 rounded-lg text-xs font-medium bg-slate-800 text-slate-400 border border-slate-700 hover:text-white transition-colors"
+            title="Reset Camera View"
+            className="p-1.5 rounded-lg text-xs font-medium bg-white text-slate-600 border border-slate-200 hover:text-slate-900 transition-colors"
           >
             <Maximize2 className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
 
-      {/* 3D WebGL Canvas Viewport */}
+      {/* 3D WebGL Viewport */}
       <div
         ref={containerRef}
-        className="w-full h-[380px] sm:h-[440px] cursor-grab active:cursor-grabbing relative"
+        className="w-full h-[360px] sm:h-[420px] cursor-grab active:cursor-grabbing relative"
       />
 
-      {/* Real-time Dimensions & Volume HUD Overlay */}
+      {/* HUD Overlay with Live Scaled Dimensions */}
       <div className="absolute bottom-3 left-3 right-3 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
-        <div className="flex items-center gap-2 pointer-events-auto bg-slate-900/90 backdrop-blur-md px-3 py-2 rounded-xl border border-slate-800 text-xs shadow-lg">
-          <Box className="w-4 h-4 text-orange-400 shrink-0" />
-          <div className="text-[11px] space-x-1.5 text-slate-300">
-            <span>Dimensions:</span>
-            <strong className="text-white font-mono">
-              X: {dimensions.x} × Y: {dimensions.y} × Z: {dimensions.z} mm
+        <div className="flex items-center gap-2 pointer-events-auto bg-white/95 backdrop-blur-md px-3 py-2 rounded-xl border border-slate-200 text-xs shadow-sm">
+          <Box className="w-4 h-4 text-orange-600 shrink-0" />
+          <div className="text-[11px] text-slate-600">
+            <span>Size: </span>
+            <strong className="text-slate-900 font-mono font-bold">
+              {priceBreakdown.scaledDimensions.x} &times; {priceBreakdown.scaledDimensions.y} &times; {priceBreakdown.scaledDimensions.z} mm
             </strong>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 pointer-events-auto bg-slate-900/90 backdrop-blur-md px-3 py-2 rounded-xl border border-slate-800 text-xs shadow-lg">
-          <Scale className="w-4 h-4 text-emerald-400 shrink-0" />
-          <div className="text-[11px] space-x-1.5 text-slate-300">
-            <span>Net Volume:</span>
-            <strong className="text-emerald-400 font-mono">{volumeCm3} cm³</strong>
+        <div className="flex items-center gap-2 pointer-events-auto bg-white/95 backdrop-blur-md px-3 py-2 rounded-xl border border-slate-200 text-xs shadow-sm">
+          <Scale className="w-4 h-4 text-emerald-600 shrink-0" />
+          <div className="text-[11px] text-slate-600">
+            <span>Volume: </span>
+            <strong className="text-emerald-700 font-mono font-bold">
+              {priceBreakdown.scaledVolumeCm3} cm&sup3;
+            </strong>
           </div>
         </div>
       </div>

@@ -3,41 +3,51 @@ import * as THREE from 'three';
 import {
   CustomerDetails,
   CustomerOrder,
-  DesignComplexity,
+  DeliverySpeedOption,
   DesignRequestQuote,
   Dimensions,
+  DirectPrintQuote,
   MaterialType,
   OrderStatus,
   OrderType,
+  SimpleColorOption,
 } from '@/types';
-import { calculatePrintPrice, DetailedPriceBreakdown } from './pricing';
+import { calculatePrintPrice, PriceBreakdownResult } from './pricing';
 import { INITIAL_ORDERS } from './sampleData';
 
+export type AppView =
+  | 'landing'
+  | 'branch'
+  | 'order-a'
+  | 'order-b'
+  | 'checkout'
+  | 'confirmation'
+  | 'portfolio'
+  | 'reviews'
+  | 'admin';
+
 interface AppState {
-  // Navigation & Wizard mode
-  activeTab: 'quote' | 'portfolio' | 'materials' | 'admin';
-  setActiveTab: (tab: 'quote' | 'portfolio' | 'materials' | 'admin') => void;
+  // Navigation & View State
+  activeView: AppView;
+  setActiveView: (view: AppView) => void;
 
   orderType: OrderType;
-  setOrderType: (type: OrderType) => void;
+  setOrderType: (orderType: OrderType) => void;
 
-  // Direct Print State (Path A)
+  // Option A (Direct 3D Print) State
   selectedPresetId: string | null;
   fileName: string;
-  fileBuffer: ArrayBuffer | null;
   activeGeometry: THREE.BufferGeometry | null;
-  dimensions: Dimensions;
-  volumeCm3: number;
+  baseDimensions: Dimensions;
+  baseVolumeCm3: number;
+  scaleFactor: number; // e.g. 0.5, 1.0, 1.5
   material: MaterialType;
-  infillPercentage: number;
-  colorCount: number;
-  deliverySpeed: 'STANDARD' | 'EXPRESS' | 'COURIER_RANDSTAD' | 'PICKUP';
-  isStudent: boolean;
-  studentInstitution: string;
+  colorOption: SimpleColorOption;
+  deliverySpeed: DeliverySpeedOption;
   specialInstructions: string;
-  priceBreakdown: DetailedPriceBreakdown;
+  priceBreakdown: PriceBreakdownResult;
 
-  // Direct Print Actions
+  // Option A Actions
   setModelGeometry: (
     fileName: string,
     geometry: THREE.BufferGeometry,
@@ -45,146 +55,143 @@ interface AppState {
     volumeCm3: number,
     presetId?: string | null
   ) => void;
+  setScaleFactor: (scale: number) => void;
   setMaterial: (material: MaterialType) => void;
-  setInfillPercentage: (infill: number) => void;
-  setColorCount: (colors: number) => void;
-  setDeliverySpeed: (speed: 'STANDARD' | 'EXPRESS' | 'COURIER_RANDSTAD' | 'PICKUP') => void;
-  setIsStudent: (isStudent: boolean, institution?: string) => void;
+  setColorOption: (colorOption: SimpleColorOption) => void;
+  setDeliverySpeed: (deliverySpeed: DeliverySpeedOption) => void;
   setSpecialInstructions: (notes: string) => void;
 
-  // CAD Design Request State (Path B)
-  cadComplexity: DesignComplexity;
+  // Option B (CAD Design Intake) State
   cadDescription: string;
   cadTargetDimensions: Dimensions;
-  cadFunctionalRequirements: string;
-  cadIntendedUse: 'functional' | 'decorative' | 'heat-resistant' | 'flexible';
+  cadCustomerNotes: string;
+  cadReferenceLinks: string;
   cadReferenceImages: string[];
+  selectedBenchmarkCardId: string | null;
+  cadContactName: string;
+  cadContactEmail: string;
   setCadDetails: (details: Partial<{
-    cadComplexity: DesignComplexity;
     cadDescription: string;
     cadTargetDimensions: Dimensions;
-    cadFunctionalRequirements: string;
-    cadIntendedUse: 'functional' | 'decorative' | 'heat-resistant' | 'flexible';
+    cadCustomerNotes: string;
+    cadReferenceLinks: string;
     cadReferenceImages: string[];
+    selectedBenchmarkCardId: string | null;
+    cadContactName: string;
+    cadContactEmail: string;
   }>) => void;
 
-  // Checkout modal
-  isCheckoutModalOpen: boolean;
-  setIsCheckoutModalOpen: (open: boolean) => void;
+  // Checkout State
+  customer: CustomerDetails;
+  setCustomer: (customer: Partial<CustomerDetails>) => void;
+  selectedPaymentMethod: 'ideal' | 'card';
+  setSelectedPaymentMethod: (method: 'ideal' | 'card') => void;
 
-  // Confirmed order popup
+  // Order Confirmation
   lastSubmittedOrder: CustomerOrder | null;
   setLastSubmittedOrder: (order: CustomerOrder | null) => void;
 
   // Admin & Orders list
   orders: CustomerOrder[];
-  addOrder: (order: CustomerOrder) => void;
   updateOrderStatus: (id: string, status: OrderStatus) => void;
   updateCadQuotePrice: (id: string, priceEur: number, engineerNotes?: string) => void;
 
-  // Place Order Action
-  submitOrder: (customer: CustomerDetails) => CustomerOrder;
+  // Order submission
+  submitDirectOrder: () => CustomerOrder;
+  submitDesignRequest: () => CustomerOrder;
 }
 
-const DEFAULT_DIMENSIONS: Dimensions = { x: 60, y: 45, z: 28 };
-const DEFAULT_VOLUME = 24.5; // cm3
+const DEFAULT_BASE_DIMS: Dimensions = { x: 60, y: 53, z: 28 };
+const DEFAULT_BASE_VOLUME = 47.0;
 
 const initialBreakdown = calculatePrintPrice({
-  volumeCm3: DEFAULT_VOLUME,
-  dimensions: DEFAULT_DIMENSIONS,
-  material: 'PLA',
-  infillPercentage: 15,
-  colorCount: 1,
-  deliverySpeed: 'STANDARD',
-  isStudent: false,
+  baseVolumeCm3: DEFAULT_BASE_VOLUME,
+  baseDimensions: DEFAULT_BASE_DIMS,
+  scaleFactor: 1.0,
+  material: 'STANDARD',
+  colorOption: 'SINGLE',
+  deliverySpeed: 'COURIER_RANDSTAD',
 });
 
 export const useAppStore = create<AppState>((set, get) => ({
-  activeTab: 'quote',
-  setActiveTab: (tab) => set({ activeTab: tab }),
+  activeView: 'landing',
+  setActiveView: (view) => set({ activeView: view }),
 
   orderType: 'DIRECT_PRINT',
   setOrderType: (orderType) => set({ orderType }),
 
-  // Direct Print State
+  // Option A defaults
   selectedPresetId: 'mechanical-bracket',
   fileName: 't_joint_mount_bracket_60mm.stl',
-  fileBuffer: null,
   activeGeometry: null,
-  dimensions: DEFAULT_DIMENSIONS,
-  volumeCm3: DEFAULT_VOLUME,
-  material: 'PLA',
-  infillPercentage: 15,
-  colorCount: 1,
-  deliverySpeed: 'STANDARD',
-  isStudent: false,
-  studentInstitution: '',
+  baseDimensions: DEFAULT_BASE_DIMS,
+  baseVolumeCm3: DEFAULT_BASE_VOLUME,
+  scaleFactor: 1.0,
+  material: 'STANDARD',
+  colorOption: 'SINGLE',
+  deliverySpeed: 'COURIER_RANDSTAD',
   specialInstructions: '',
   priceBreakdown: initialBreakdown,
 
   setModelGeometry: (fileName, geometry, dimensions, volumeCm3, presetId = null) => {
     set((state) => {
-      const priceBreakdown = calculatePrintPrice({
-        volumeCm3,
-        dimensions,
+      const breakdown = calculatePrintPrice({
+        baseVolumeCm3: volumeCm3,
+        baseDimensions: dimensions,
+        scaleFactor: state.scaleFactor,
         material: state.material,
-        infillPercentage: state.infillPercentage,
-        colorCount: state.colorCount,
+        colorOption: state.colorOption,
         deliverySpeed: state.deliverySpeed,
-        isStudent: state.isStudent,
       });
       return {
         fileName,
         activeGeometry: geometry,
-        dimensions,
-        volumeCm3,
+        baseDimensions: dimensions,
+        baseVolumeCm3: volumeCm3,
         selectedPresetId: presetId,
-        priceBreakdown,
+        priceBreakdown: breakdown,
       };
     });
+  },
+
+  setScaleFactor: (scaleFactor) => {
+    set((state) => ({
+      scaleFactor,
+      priceBreakdown: calculatePrintPrice({
+        baseVolumeCm3: state.baseVolumeCm3,
+        baseDimensions: state.baseDimensions,
+        scaleFactor,
+        material: state.material,
+        colorOption: state.colorOption,
+        deliverySpeed: state.deliverySpeed,
+      }),
+    }));
   },
 
   setMaterial: (material) => {
     set((state) => ({
       material,
       priceBreakdown: calculatePrintPrice({
-        volumeCm3: state.volumeCm3,
-        dimensions: state.dimensions,
+        baseVolumeCm3: state.baseVolumeCm3,
+        baseDimensions: state.baseDimensions,
+        scaleFactor: state.scaleFactor,
         material,
-        infillPercentage: state.infillPercentage,
-        colorCount: state.colorCount,
+        colorOption: state.colorOption,
         deliverySpeed: state.deliverySpeed,
-        isStudent: state.isStudent,
       }),
     }));
   },
 
-  setInfillPercentage: (infillPercentage) => {
+  setColorOption: (colorOption) => {
     set((state) => ({
-      infillPercentage,
+      colorOption,
       priceBreakdown: calculatePrintPrice({
-        volumeCm3: state.volumeCm3,
-        dimensions: state.dimensions,
+        baseVolumeCm3: state.baseVolumeCm3,
+        baseDimensions: state.baseDimensions,
+        scaleFactor: state.scaleFactor,
         material: state.material,
-        infillPercentage,
-        colorCount: state.colorCount,
+        colorOption,
         deliverySpeed: state.deliverySpeed,
-        isStudent: state.isStudent,
-      }),
-    }));
-  },
-
-  setColorCount: (colorCount) => {
-    set((state) => ({
-      colorCount,
-      priceBreakdown: calculatePrintPrice({
-        volumeCm3: state.volumeCm3,
-        dimensions: state.dimensions,
-        material: state.material,
-        infillPercentage: state.infillPercentage,
-        colorCount,
-        deliverySpeed: state.deliverySpeed,
-        isStudent: state.isStudent,
       }),
     }));
   },
@@ -193,54 +200,50 @@ export const useAppStore = create<AppState>((set, get) => ({
     set((state) => ({
       deliverySpeed,
       priceBreakdown: calculatePrintPrice({
-        volumeCm3: state.volumeCm3,
-        dimensions: state.dimensions,
+        baseVolumeCm3: state.baseVolumeCm3,
+        baseDimensions: state.baseDimensions,
+        scaleFactor: state.scaleFactor,
         material: state.material,
-        infillPercentage: state.infillPercentage,
-        colorCount: state.colorCount,
+        colorOption: state.colorOption,
         deliverySpeed,
-        isStudent: state.isStudent,
-      }),
-    }));
-  },
-
-  setIsStudent: (isStudent, institution = '') => {
-    set((state) => ({
-      isStudent,
-      studentInstitution: institution || state.studentInstitution,
-      priceBreakdown: calculatePrintPrice({
-        volumeCm3: state.volumeCm3,
-        dimensions: state.dimensions,
-        material: state.material,
-        infillPercentage: state.infillPercentage,
-        colorCount: state.colorCount,
-        deliverySpeed: state.deliverySpeed,
-        isStudent,
       }),
     }));
   },
 
   setSpecialInstructions: (specialInstructions) => set({ specialInstructions }),
 
-  // CAD Intake State
-  cadComplexity: 'MEDIUM',
+  // Option B defaults
   cadDescription: '',
-  cadTargetDimensions: { x: 100, y: 100, z: 50 },
-  cadFunctionalRequirements: '',
-  cadIntendedUse: 'functional',
+  cadTargetDimensions: { x: 80, y: 50, z: 25 },
+  cadCustomerNotes: '',
+  cadReferenceLinks: '',
   cadReferenceImages: [],
+  selectedBenchmarkCardId: 'bench-2',
+  cadContactName: '',
+  cadContactEmail: '',
   setCadDetails: (details) => set((state) => ({ ...state, ...details })),
 
-  // Checkout modal
-  isCheckoutModalOpen: false,
-  setIsCheckoutModalOpen: (isCheckoutModalOpen) => set({ isCheckoutModalOpen }),
+  // Checkout defaults
+  customer: {
+    fullName: '',
+    email: '',
+    phone: '',
+    city: 'Haarlem',
+    address: '',
+    postalCode: '',
+    notes: '',
+  },
+  setCustomer: (customer) =>
+    set((state) => ({ customer: { ...state.customer, ...customer } })),
+
+  selectedPaymentMethod: 'ideal',
+  setSelectedPaymentMethod: (selectedPaymentMethod) => set({ selectedPaymentMethod }),
 
   lastSubmittedOrder: null,
   setLastSubmittedOrder: (lastSubmittedOrder) => set({ lastSubmittedOrder }),
 
-  // Admin & Orders list
+  // Orders
   orders: INITIAL_ORDERS,
-  addOrder: (order) => set((state) => ({ orders: [order, ...state.orders] })),
   updateOrderStatus: (id, status) => {
     set((state) => ({
       orders: state.orders.map((o) => (o.id === id ? { ...o, status } : o)),
@@ -267,66 +270,82 @@ export const useAppStore = create<AppState>((set, get) => ({
     }));
   },
 
-  submitOrder: (customer) => {
-    const state = get();
+  submitDirectOrder: () => {
+    const s = get();
     const orderId = `ORD-NL-${Math.floor(1000 + Math.random() * 9000)}`;
-    const now = new Date().toISOString();
+    const newOrder: CustomerOrder = {
+      id: orderId,
+      createdAt: new Date().toISOString(),
+      type: 'DIRECT_PRINT',
+      status: 'QUOTE_SUBMITTED',
+      customer: s.customer,
+      paymentMethod: s.selectedPaymentMethod,
+      details: {
+        fileUrl: '',
+        fileName: s.fileName,
+        baseDimensions: s.baseDimensions,
+        dimensions: s.priceBreakdown.scaledDimensions,
+        scaleFactor: s.scaleFactor,
+        baseVolumeCm3: s.baseVolumeCm3,
+        volumeCm3: s.priceBreakdown.scaledVolumeCm3,
+        material: s.material,
+        colorOption: s.colorOption,
+        colorCount: s.colorOption === 'MULTI' ? 2 : 1,
+        deliverySpeed: s.deliverySpeed,
+        estimatedWeightGrams: s.priceBreakdown.weightGrams,
+        estimatedPrintTimeMinutes: s.priceBreakdown.estimatedPrintTimeMinutes,
+        estimatedDeliveryDate: s.priceBreakdown.estimatedDeliveryDate,
+        baseSetupFeeEur: s.priceBreakdown.baseSetupFeeEur,
+        materialCostEur: s.priceBreakdown.materialCostEur,
+        machineCostEur: s.priceBreakdown.machineCostEur,
+        colorMultiplier: s.priceBreakdown.colorMultiplier,
+        shippingCostEur: s.priceBreakdown.shippingCostEur,
+        calculatedPriceEur: s.priceBreakdown.totalPriceEur,
+        specialInstructions: s.specialInstructions,
+      },
+    };
 
-    let newOrder: CustomerOrder;
-
-    if (state.orderType === 'DIRECT_PRINT') {
-      newOrder = {
-        id: orderId,
-        createdAt: now,
-        type: 'DIRECT_PRINT',
-        status: 'QUOTE_SUBMITTED',
-        customer,
-        details: {
-          fileUrl: '',
-          fileName: state.fileName,
-          volumeCm3: state.volumeCm3,
-          dimensions: state.dimensions,
-          material: state.material,
-          infillPercentage: state.infillPercentage,
-          colorCount: state.colorCount,
-          deliverySpeed: state.deliverySpeed,
-          estimatedWeightGrams: state.priceBreakdown.weightGrams,
-          estimatedPrintTimeMinutes: state.priceBreakdown.estimatedPrintTimeMinutes,
-          baseSetupFeeEur: state.priceBreakdown.baseSetupFeeEur,
-          materialCostEur: state.priceBreakdown.materialCostEur,
-          machineCostEur: state.priceBreakdown.machineCostEur,
-          colorMultiplier: state.priceBreakdown.colorMultiplier,
-          shippingCostEur: state.priceBreakdown.shippingCostEur,
-          studentDiscountEur: state.priceBreakdown.studentDiscountEur,
-          calculatedPriceEur: state.priceBreakdown.totalPriceEur,
-          specialInstructions: state.specialInstructions,
-        },
-      };
-    } else {
-      newOrder = {
-        id: orderId,
-        createdAt: now,
-        type: 'DESIGN_AND_PRINT',
-        status: 'QUOTE_SUBMITTED',
-        customer,
-        details: {
-          referenceImages: state.cadReferenceImages.length > 0 ? state.cadReferenceImages : ['concept_reference_sketch.png'],
-          description: state.cadDescription || 'Custom mechanical component model request',
-          targetDimensions: state.cadTargetDimensions,
-          functionalRequirements: state.cadFunctionalRequirements,
-          intendedUse: state.cadIntendedUse,
-          estimatedComplexity: state.cadComplexity,
-          status: 'PENDING_REVIEW',
-          quotedPriceEur: state.cadComplexity === 'SIMPLE' ? 45.0 : state.cadComplexity === 'MEDIUM' ? 95.0 : 210.0,
-          estimatedTurnaroundDays: state.cadComplexity === 'SIMPLE' ? 1 : state.cadComplexity === 'MEDIUM' ? 2 : 3,
-        },
-      };
-    }
-
-    set((s) => ({
-      orders: [newOrder, ...s.orders],
+    set((state) => ({
+      orders: [newOrder, ...state.orders],
       lastSubmittedOrder: newOrder,
-      isCheckoutModalOpen: false,
+      activeView: 'confirmation',
+    }));
+
+    return newOrder;
+  },
+
+  submitDesignRequest: () => {
+    const s = get();
+    const orderId = `REQ-CAD-${Math.floor(1000 + Math.random() * 9000)}`;
+    const newOrder: CustomerOrder = {
+      id: orderId,
+      createdAt: new Date().toISOString(),
+      type: 'DESIGN_AND_PRINT',
+      status: 'QUOTE_SUBMITTED',
+      customer: {
+        fullName: s.cadContactName || 'Customer',
+        email: s.cadContactEmail || 'customer@example.nl',
+        city: 'Haarlem',
+        address: 'Haarlem / Amsterdam / Utrecht Area',
+      },
+      details: {
+        referenceImages: s.cadReferenceImages.length > 0 ? s.cadReferenceImages : ['concept_sketch.png'],
+        referenceLinks: s.cadReferenceLinks,
+        description: s.cadDescription || 'Custom 3D model design from ideas/photos',
+        targetDimensions: s.cadTargetDimensions,
+        customerNotes: s.cadCustomerNotes,
+        estimatedComplexity: 'MEDIUM',
+        benchmarkCardId: s.selectedBenchmarkCardId || 'bench-2',
+        status: 'PENDING_REVIEW',
+        quotedPriceEur: 45.0,
+        estimatedTurnaroundDays: 1,
+      },
+    };
+
+    set((state) => ({
+      orders: [newOrder, ...state.orders],
+      lastSubmittedOrder: newOrder,
+      activeView: 'confirmation',
     }));
 
     return newOrder;

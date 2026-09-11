@@ -6,41 +6,53 @@ import Footer from '@/components/layout/Footer';
 import Hero from '@/components/home/Hero';
 import HowItWorks from '@/components/home/HowItWorks';
 import BenchmarkPortfolio from '@/components/home/BenchmarkPortfolio';
-import StudentPerks from '@/components/home/StudentPerks';
-import MaterialShowcase from '@/components/home/MaterialShowcase';
-import QuoteWizard from '@/components/quote/QuoteWizard';
+import ReviewsSection from '@/components/home/ReviewsSection';
+import OrderBranchPoint from '@/components/quote/OrderBranchPoint';
+import OptionAOrderPage from '@/components/quote/OptionAOrderPage';
+import CadDesignIntake from '@/components/quote/CadDesignIntake';
+import CheckoutPage from '@/components/checkout/CheckoutPage';
+import OrderConfirmationView from '@/components/checkout/OrderConfirmationView';
 import OrderTable from '@/components/admin/OrderTable';
 import { useAppStore } from '@/lib/store';
 
 export default function Home() {
-  const { activeTab } = useAppStore();
+  const { activeView } = useAppStore();
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#090d16] bg-grid-pattern relative">
+    <div className="min-h-screen flex flex-col bg-white text-slate-900 bg-light-grid">
       <Navbar />
 
       <main className="flex-1">
-        {activeTab === 'admin' ? (
-          <OrderTable />
-        ) : activeTab === 'portfolio' ? (
-          <div className="space-y-12">
-            <BenchmarkPortfolio />
-            <QuoteWizard />
-          </div>
-        ) : activeTab === 'materials' ? (
-          <div className="space-y-12">
-            <MaterialShowcase />
-            <QuoteWizard />
-          </div>
-        ) : (
-          /* Default tab: 'quote' */
+        {activeView === 'branch' ? (
+          <OrderBranchPoint />
+        ) : activeView === 'order-a' ? (
+          <OptionAOrderPage />
+        ) : activeView === 'order-b' ? (
+          <CadDesignIntake />
+        ) : activeView === 'checkout' ? (
+          <CheckoutPage />
+        ) : activeView === 'confirmation' ? (
+          <OrderConfirmationView />
+        ) : activeView === 'portfolio' ? (
           <div className="space-y-6">
-            <Hero />
-            <HowItWorks />
-            <QuoteWizard />
             <BenchmarkPortfolio />
-            <StudentPerks />
-            <MaterialShowcase />
+            <OrderBranchPoint />
+          </div>
+        ) : activeView === 'reviews' ? (
+          <div className="space-y-6">
+            <ReviewsSection />
+            <OrderBranchPoint />
+          </div>
+        ) : activeView === 'admin' ? (
+          <OrderTable />
+        ) : (
+          /* Default: 'landing' */
+          <div className="space-y-0">
+            <Hero />
+            <OrderBranchPoint />
+            <HowItWorks />
+            <BenchmarkPortfolio />
+            <ReviewsSection />
           </div>
         )}
       </main>

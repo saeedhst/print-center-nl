@@ -2,51 +2,53 @@
 
 @layer base {
   :root {
-    --brand-orange: #ff5500;
-    --brand-orange-light: #ff7733;
-    --brand-blue: #0284c7;
-    --brand-dark: #0f172a;
-    --brand-navy: #030712;
+    --background: #ffffff;
+    --foreground: #0f172a;
+    --card-bg: #f8fafc;
+    --card-border: #e2e8f0;
+    --accent-orange: #ea580c;
+    --accent-orange-hover: #c2410c;
+    --accent-dark: #0f172a;
   }
 
   body {
-    background-color: #090d16;
-    color: #f3f4f6;
+    background-color: #ffffff;
+    color: #0f172a;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
-/* Custom subtle scrollbar */
+/* Subtle clean scrollbar */
 ::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0b0f19;
+  background: #f1f5f9;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1f293d;
-  border-radius: 4px;
+  background: #cbd5e1;
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #94a3b8;
 }
 
-.bg-grid-pattern {
-  background-size: 32px 32px;
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+/* Light dot grid background for technical airy feel */
+.bg-light-grid {
+  background-size: 24px 24px;
+  background-image: radial-gradient(circle, #e2e8f0 1px, transparent 1px);
 }
 
-.glow-orange {
-  box-shadow: 0 0 40px -10px rgba(255, 85, 0, 0.35);
+.shadow-soft {
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
 }
 
-.glow-blue {
-  box-shadow: 0 0 40px -10px rgba(2, 132, 199, 0.35);
+.shadow-card {
+  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.06), 0 4px 12px -2px rgba(15, 23, 42, 0.04);
 }

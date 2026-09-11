@@ -8,15 +8,14 @@ import {
   getBoundingBoxDimensions,
   PRESET_MODELS,
 } from '@/lib/meshUtils';
-import { UploadCloud, FileText, CheckCircle, Sparkles, AlertCircle, Loader2 } from 'lucide-react';
+import { UploadCloud, CheckCircle2, Sparkles, AlertCircle, Loader2 } from 'lucide-react';
 
 export default function FileUploadDropzone() {
   const {
     setModelGeometry,
     fileName,
     selectedPresetId,
-    dimensions,
-    volumeCm3,
+    priceBreakdown,
   } = useAppStore();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -39,7 +38,6 @@ export default function FileUploadDropzone() {
       setIsLoadingFile(true);
       const arrayBuffer = await file.arrayBuffer();
 
-      // Parse STL geometry directly in browser
       const geometry = await parseStlBuffer(arrayBuffer);
       const dims = getBoundingBoxDimensions(geometry);
       const volume = calculateGeometryVolumeCm3(geometry);
@@ -87,10 +85,10 @@ export default function FileUploadDropzone() {
         onDragLeave={() => setIsDragging(false)}
         onDrop={onDrop}
         onClick={() => fileInputRef.current?.click()}
-        className={`relative border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all ${
+        className={`relative border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all bg-white ${
           isDragging
-            ? 'border-orange-500 bg-orange-500/10 scale-[1.01]'
-            : 'border-slate-700/80 bg-slate-900/50 hover:bg-slate-900/80 hover:border-slate-600'
+            ? 'border-orange-600 bg-orange-50/50 scale-[1.01]'
+            : 'border-slate-300 hover:border-slate-400 hover:bg-slate-50/70 shadow-xs'
         }`}
       >
         <input
@@ -106,36 +104,36 @@ export default function FileUploadDropzone() {
         />
 
         <div className="flex flex-col items-center justify-center space-y-3">
-          <div className="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-400 flex items-center justify-center shadow-inner">
+          <div className="w-12 h-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center shadow-xs">
             {isLoadingFile ? (
-              <Loader2 className="w-6 h-6 animate-spin text-orange-400" />
+              <Loader2 className="w-6 h-6 animate-spin text-orange-600" />
             ) : (
               <UploadCloud className="w-6 h-6" />
             )}
           </div>
 
           <div>
-            <p className="text-sm font-semibold text-white">
-              Drop your 3D model here or <span className="text-orange-400 underline">browse files</span>
+            <p className="text-sm font-bold text-slate-900">
+              Drag &amp; drop your 3D file here, or <span className="text-orange-600 underline">browse your files</span>
             </p>
-            <p className="text-xs text-slate-400 mt-1">
-              Supports <strong>.STL</strong>, <strong>.OBJ</strong>, and <strong>.3MF</strong> (Max 100MB)
+            <p className="text-xs text-slate-500 mt-1">
+              Supports <strong>.STL</strong>, <strong>.OBJ</strong>, and <strong>.3MF</strong> (Up to 100MB)
             </p>
           </div>
 
-          <div className="flex items-center gap-4 text-[11px] text-slate-400 pt-1">
-            <span className="flex items-center gap-1 text-emerald-400">
-              <CheckCircle className="w-3.5 h-3.5" /> Client-Side Slicing Analysis
+          <div className="flex items-center gap-4 text-[11px] text-slate-500 pt-1">
+            <span className="flex items-center gap-1 text-emerald-700 font-medium">
+              <CheckCircle2 className="w-3.5 h-3.5" /> Direct In-Browser Inspection
             </span>
-            <span>•</span>
-            <span className="flex items-center gap-1 text-slate-300">
-              Instant mm &amp; cm³ extraction
+            <span>&bull;</span>
+            <span className="text-slate-600">
+              Instant mm &amp; cm&sup3; calculation
             </span>
           </div>
         </div>
 
         {errorMessage && (
-          <div className="mt-4 p-2.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs flex items-center gap-2 justify-center">
+          <div className="mt-4 p-2.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2 justify-center">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{errorMessage}</span>
           </div>
@@ -145,9 +143,9 @@ export default function FileUploadDropzone() {
       {/* Preset sample model quick-selector */}
       <div className="pt-1">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold text-slate-400 flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            Don&apos;t have a file ready? Load a real Dutch sample model:
+          <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+            No file at hand? Try a benchmark 3D sample:
           </span>
         </div>
 
@@ -164,12 +162,12 @@ export default function FileUploadDropzone() {
                 }}
                 className={`p-2.5 rounded-xl text-left border transition-all text-xs ${
                   isSelected
-                    ? 'bg-orange-500/15 border-orange-500 text-orange-200 shadow-sm'
-                    : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-slate-700 hover:bg-slate-850'
+                    ? 'bg-orange-50 border-orange-500 text-slate-900 shadow-xs ring-1 ring-orange-500'
+                    : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-50'
                 }`}
               >
-                <div className="font-semibold text-white truncate">{preset.name.split(' (')[0]}</div>
-                <div className="text-[10px] text-slate-400 mt-0.5">{preset.tag}</div>
+                <div className="font-bold text-slate-900 truncate">{preset.name.split(' (')[0]}</div>
+                <div className="text-[10px] text-slate-500 mt-0.5">{preset.tag}</div>
               </button>
             );
           })}

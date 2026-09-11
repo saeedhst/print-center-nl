@@ -1,224 +1,191 @@
-import { Dimensions, MaterialOption, MaterialType } from '@/types';
+import { DeliverySpeedOption, Dimensions, MaterialOption, MaterialType, SimpleColorOption } from '@/types';
 
-export const MATERIALS: Record<MaterialType, MaterialOption> = {
-  PLA: {
-    id: 'PLA',
-    name: 'Polylactic Acid (PLA)',
+export const SIMPLE_MATERIALS: Record<string, MaterialOption> = {
+  STANDARD: {
+    id: 'STANDARD',
+    name: 'Standard (PLA)',
+    simpleName: 'Standard',
     density: 1.24,
     ratePerGram: 0.08,
-    description: 'Eco-friendly, rigid, and high-detail. Perfect for rapid prototypes, visual models, and consumer goods.',
-    tag: 'Popular & Fast',
-    accentColor: '#10b981', // emerald
-    finish: 'Smooth satin',
-    bestFor: 'Prototyping, architectural models, figurines',
-    tensileStrength: '50 MPa',
-    tempResistance: '55°C',
+    description: 'Clean surface finish, rigid, and eco-friendly. Ideal for visual prototypes, scale models, and household items.',
+    tag: 'Most Popular',
+    finish: 'Smooth matte-satin',
+    colorSwatch: '#64748b', // clean slate
+    colorHex: 0xf1f5f9,
   },
-  PETG: {
-    id: 'PETG',
-    name: 'Polyethylene Terephthalate (PETG)',
+  TOUGH: {
+    id: 'TOUGH',
+    name: 'Tough (PETG / Engineering)',
+    simpleName: 'Tough',
     density: 1.27,
     ratePerGram: 0.10,
-    description: 'Tough, moisture-resistant, and chemically stable. Excellent for functional mechanical brackets and enclosures.',
-    tag: 'Impact Resistant',
-    accentColor: '#f97316', // orange
-    finish: 'Semi-gloss durable',
-    bestFor: 'Mechanical parts, outdoor use, waterproof containers',
-    tensileStrength: '45 MPa',
-    tempResistance: '75°C',
-  },
-  ABS: {
-    id: 'ABS',
-    name: 'Acrylonitrile Butadiene Styrene (ABS)',
-    density: 1.04,
-    ratePerGram: 0.11,
-    description: 'High heat and impact resistance. Can be vapor smoothed with acetone. Great for automotive and engineering.',
-    tag: 'High Heat',
-    accentColor: '#3b82f6', // blue
-    finish: 'Matte technical',
-    bestFor: 'Automotive clips, gearboxes, high-temperature fittings',
-    tensileStrength: '42 MPa',
-    tempResistance: '95°C',
-  },
-  TPU: {
-    id: 'TPU',
-    name: 'Thermoplastic Polyurethane (TPU 95A)',
-    density: 1.21,
-    ratePerGram: 0.14,
-    description: 'Flexible, rubber-like elastomer. Shock-absorbing, resistant to grease, tears, and abrasion.',
-    tag: 'Flexible Rubber',
-    accentColor: '#8b5cf6', // purple
-    finish: 'Rubberized grip',
-    bestFor: 'Gaskets, phone bumpers, drone vibration dampers',
-    tensileStrength: '35 MPa',
-    tempResistance: '80°C',
+    description: 'High impact resistance, chemical stability, and weatherproof. Perfect for functional brackets and moving parts.',
+    tag: 'High Strength',
+    finish: 'Durable semi-gloss',
+    colorSwatch: '#ea580c', // modern orange
+    colorHex: 0xea580c,
   },
   RESIN: {
     id: 'RESIN',
-    name: 'High-Detail SLA Photopolymer Resin',
+    name: 'Smooth Resin (SLA Photopolymer)',
+    simpleName: 'Smooth Resin',
     density: 1.15,
     ratePerGram: 0.18,
-    description: 'Ultra-high resolution stereolithography with microscopic layer lines (0.025mm). Smooth, injection-mold look.',
+    description: 'Microscopic 0.03mm layer height for ultra-smooth, injection-molded precision with razor-sharp detailing.',
     tag: 'Ultra Detail',
-    accentColor: '#ec4899', // pink
-    finish: 'Ultra smooth / injection-molded feel',
-    bestFor: 'Jewelry casting, dental scale, miniature collectibles',
-    tensileStrength: '65 MPa',
-    tempResistance: '60°C',
+    finish: 'Ultra-smooth glass-like',
+    colorSwatch: '#0284c7', // cobalt
+    colorHex: 0x94a3b8,
   },
+};
+
+// Aliases for any legacy references
+export const MATERIALS: Record<string, MaterialOption> = {
+  ...SIMPLE_MATERIALS,
+  PLA: SIMPLE_MATERIALS.STANDARD,
+  PETG: SIMPLE_MATERIALS.TOUGH,
+  ABS: SIMPLE_MATERIALS.TOUGH,
+  TPU: SIMPLE_MATERIALS.TOUGH,
 };
 
 export const BASE_SETUP_FEE_EUR = 3.50;
 export const MACHINE_RATE_PER_HOUR_EUR = 2.40;
-export const STUDENT_DISCOUNT_PERCENT = 15;
 
 export interface ShippingTier {
-  id: 'STANDARD' | 'EXPRESS' | 'COURIER_RANDSTAD' | 'PICKUP';
+  id: DeliverySpeedOption;
   name: string;
   carrier: string;
   duration: string;
   costEur: number;
   highlight?: string;
-  availableCities?: string[];
 }
 
-export const SHIPPING_TIERS: ShippingTier[] = [
+export const DELIVERY_OPTIONS: ShippingTier[] = [
   {
     id: 'STANDARD',
-    name: 'PostNL Standard Parcel',
-    carrier: 'PostNL with Track & Trace',
-    duration: '3–4 business days',
+    name: 'Standard Delivery (PostNL / DHL)',
+    carrier: 'PostNL & DHL Parcel Network',
+    duration: '2–3 working days',
     costEur: 4.95,
   },
   {
-    id: 'EXPRESS',
-    name: 'PostNL Express Priority',
-    carrier: 'PostNL Next-Day Express',
-    duration: '1–2 business days',
-    costEur: 8.50,
-    highlight: 'Fast Nationwide',
-  },
-  {
     id: 'COURIER_RANDSTAD',
-    name: 'Randstad Eco Cargo Bike Courier',
-    carrier: 'Direct Urban Cargo Courier',
-    duration: 'Same-day / Next-day (Within 24h)',
-    costEur: 14.50,
-    highlight: 'Same-Day Randstad (AMS / UTR / DHG)',
-    availableCities: ['Amsterdam', 'Utrecht', 'The Hague', 'Rotterdam'],
+    name: 'Fast Randstad Courier (Haarlem, Amsterdam, Utrecht)',
+    carrier: 'Direct Urban Bike & Electric Van Courier',
+    duration: 'Dispatched in 1 working day',
+    costEur: 12.50,
+    highlight: 'Dispatched in 1 working day',
   },
   {
     id: 'PICKUP',
-    name: 'Free Studio Pickup',
-    carrier: 'PrintLab Hub Amsterdam / Utrecht Science Park',
-    duration: 'Ready in 24–48h',
+    name: 'Local Pick-up (Studio Amsterdam / Haarlem)',
+    carrier: 'Self-pickup at studio counter',
+    duration: 'Ready tomorrow at 14:00',
     costEur: 0.00,
-    highlight: 'Zero Shipping Fee',
+    highlight: 'Free',
   },
 ];
 
-export function getInfillFactor(infillPercentage: number): number {
-  if (infillPercentage <= 15) return 0.35; // Shells + 15% infill
-  if (infillPercentage <= 40) return 0.58; // Thicker walls + 40% infill
-  return 1.0; // 100% solid
-}
+export function getDeliveryDateString(option: DeliverySpeedOption): string {
+  const now = new Date();
+  const dayOfWeek = now.getDay(); // 0 is Sunday, 6 is Saturday
 
-export function getColorMultiplier(colorCount: number): number {
-  switch (colorCount) {
-    case 1:
-      return 1.0;
-    case 2:
-      return 1.25;
-    case 3:
-      return 1.50;
-    case 4:
-    default:
-      return 1.75;
+  if (option === 'COURIER_RANDSTAD') {
+    return 'Tomorrow by 18:00 (1 working day)';
+  } else if (option === 'PICKUP') {
+    return 'Tomorrow afternoon from 14:00';
+  } else {
+    // 2-3 days
+    const target = new Date();
+    target.setDate(now.getDate() + 3);
+    return target.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
   }
 }
 
-export interface PriceCalculationInput {
-  volumeCm3: number;
-  dimensions: Dimensions;
+export interface CalculatePriceInput {
+  baseVolumeCm3: number;
+  baseDimensions: Dimensions;
+  scaleFactor: number; // e.g. 0.5, 1.0, 1.5
   material: MaterialType;
-  infillPercentage: number;
-  colorCount: number;
-  deliverySpeed: 'STANDARD' | 'EXPRESS' | 'COURIER_RANDSTAD' | 'PICKUP';
-  isStudent?: boolean;
+  colorOption: SimpleColorOption;
+  deliverySpeed: DeliverySpeedOption;
 }
 
-export interface DetailedPriceBreakdown {
-  volumeCm3: number;
+export interface PriceBreakdownResult {
+  scaledDimensions: Dimensions;
+  scaledVolumeCm3: number;
   weightGrams: number;
   estimatedPrintTimeMinutes: number;
+  estimatedDeliveryDate: string;
   baseSetupFeeEur: number;
   materialCostEur: number;
   machineCostEur: number;
   colorMultiplier: number;
-  productionSubtotalEur: number;
-  studentDiscountEur: number;
   shippingCostEur: number;
+  productionSubtotalEur: number;
   totalPriceEur: number;
 }
 
-export function calculatePrintPrice(input: PriceCalculationInput): DetailedPriceBreakdown {
+export function calculatePrintPrice(input: CalculatePriceInput): PriceBreakdownResult {
   const {
-    volumeCm3,
-    dimensions,
+    baseVolumeCm3,
+    baseDimensions,
+    scaleFactor,
     material,
-    infillPercentage,
-    colorCount,
+    colorOption,
     deliverySpeed,
-    isStudent = false,
   } = input;
 
-  const matConfig = MATERIALS[material] || MATERIALS.PLA;
-  const infillFactor = getInfillFactor(infillPercentage);
+  const validScale = Math.max(0.1, Math.min(3.0, scaleFactor || 1.0));
 
-  // Filament weight calculation
-  const weightGrams = Math.max(1, Math.round(volumeCm3 * matConfig.density * infillFactor * 10) / 10);
-  const materialCostEur = Math.round(weightGrams * matConfig.ratePerGram * 100) / 100;
+  // Scale dimensions linearly
+  const scaledDimensions: Dimensions = {
+    x: Math.round(baseDimensions.x * validScale * 10) / 10,
+    y: Math.round(baseDimensions.y * validScale * 10) / 10,
+    z: Math.round(baseDimensions.z * validScale * 10) / 10,
+  };
 
-  // Print time estimation: deposition rate ~ 14 cm3/hr + layer height count
-  const zHeightMm = Math.max(5, dimensions.z || 20);
-  const effectiveVolume = volumeCm3 * infillFactor;
-  const rawHours = (effectiveVolume / 13) + (zHeightMm / 85);
-  // Add slight overhead for resin or multi-color tool switches
-  const colorSwitchesOverhead = (colorCount - 1) * 0.4;
-  const totalHours = Math.max(0.4, rawHours + colorSwitchesOverhead);
-  const estimatedPrintTimeMinutes = Math.round(totalHours * 60);
+  // Scale volume cubically (scale^3)
+  const rawScaledVolume = baseVolumeCm3 * Math.pow(validScale, 3);
+  const scaledVolumeCm3 = Math.max(0.1, Math.round(rawScaledVolume * 10) / 10);
 
-  const machineCostEur = Math.round(totalHours * MACHINE_RATE_PER_HOUR_EUR * 100) / 100;
-  const colorMultiplier = getColorMultiplier(colorCount);
+  // Material configuration
+  const matKey = (material in SIMPLE_MATERIALS ? material : 'STANDARD');
+  const mat = SIMPLE_MATERIALS[matKey] || SIMPLE_MATERIALS.STANDARD;
 
-  // Subtotal before color multiplier and setup
-  const baseManufacturing = (BASE_SETUP_FEE_EUR + materialCostEur + machineCostEur) * colorMultiplier;
-  const roundedManufacturing = Math.round(baseManufacturing * 100) / 100;
+  // Weight calculation (infill factor standard ~0.35)
+  const weightGrams = Math.max(1, Math.round(scaledVolumeCm3 * mat.density * 0.38 * 10) / 10);
+  const materialCostEur = Math.round(weightGrams * mat.ratePerGram * 100) / 100;
 
-  // Student perk: 15% off manufacturing
-  const studentDiscountEur = isStudent
-    ? Math.round(roundedManufacturing * (STUDENT_DISCOUNT_PERCENT / 100) * 100) / 100
-    : 0;
+  // Print time estimation
+  const zHeightMm = Math.max(5, scaledDimensions.z);
+  const rawHours = (scaledVolumeCm3 * 0.38 / 14) + (zHeightMm / 75);
+  const estHours = Math.max(0.3, rawHours);
+  const estimatedPrintTimeMinutes = Math.round(estHours * 60);
 
-  const manufacturingAfterDiscount = Math.max(5.00, roundedManufacturing - studentDiscountEur);
+  const machineCostEur = Math.round(estHours * MACHINE_RATE_PER_HOUR_EUR * 100) / 100;
+  const colorMultiplier = colorOption === 'MULTI' ? 1.35 : 1.0;
 
-  // Shipping
-  const shippingTier = SHIPPING_TIERS.find((t) => t.id === deliverySpeed) || SHIPPING_TIERS[0];
-  const shippingCostEur = shippingTier.costEur;
+  const productionSubtotalEur = Math.round((BASE_SETUP_FEE_EUR + materialCostEur + machineCostEur) * colorMultiplier * 100) / 100;
 
-  const totalPriceEur = Math.round((manufacturingAfterDiscount + shippingCostEur) * 100) / 100;
+  const shippingOption = DELIVERY_OPTIONS.find((d) => d.id === deliverySpeed) || DELIVERY_OPTIONS[0];
+  const shippingCostEur = shippingOption.costEur;
+
+  const totalPriceEur = Math.round((productionSubtotalEur + shippingCostEur) * 100) / 100;
+  const estimatedDeliveryDate = getDeliveryDateString(deliverySpeed);
 
   return {
-    volumeCm3: Math.round(volumeCm3 * 10) / 10,
+    scaledDimensions,
+    scaledVolumeCm3,
     weightGrams,
     estimatedPrintTimeMinutes,
+    estimatedDeliveryDate,
     baseSetupFeeEur: BASE_SETUP_FEE_EUR,
     materialCostEur,
     machineCostEur,
     colorMultiplier,
-    productionSubtotalEur: roundedManufacturing,
-    studentDiscountEur,
     shippingCostEur,
+    productionSubtotalEur,
     totalPriceEur,
   };
 }
