@@ -13,6 +13,7 @@ import CadDesignIntake from '@/components/quote/CadDesignIntake';
 import CheckoutPage from '@/components/checkout/CheckoutPage';
 import OrderConfirmationView from '@/components/checkout/OrderConfirmationView';
 import OrderTable from '@/components/admin/OrderTable';
+import AuthPage from '@/components/auth/AuthPage';
 import { useAppStore } from '@/lib/store';
 
 export default function Home() {
@@ -23,7 +24,9 @@ export default function Home() {
       <Navbar />
 
       <main className="flex-1">
-        {activeView === 'branch' ? (
+        {activeView === 'auth' ? (
+          <AuthPage />
+        ) : activeView === 'branch' ? (
           <OrderBranchPoint />
         ) : activeView === 'order-a' ? (
           <OptionAOrderPage />

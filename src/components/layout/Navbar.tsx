@@ -1,20 +1,15 @@
 'use client';
 
 import React from 'react';
-import { useAppStore, AppView } from '@/lib/store';
-import { Box, Sparkles, Truck, Layers, PenTool, CheckCircle2, ShieldCheck, ArrowRight } from 'lucide-react';
+import { useAppStore } from '@/lib/store';
+import { Box, User, LogOut, ShieldCheck, Inbox, ArrowRight } from 'lucide-react';
 
 export default function Navbar() {
-  const { activeView, setActiveView, setOrderType, orders } = useAppStore();
+  const { activeView, setActiveView, currentUser, logout, orders } = useAppStore();
 
   const pendingCount = orders.filter(
     (o) => o.status === 'QUOTE_SUBMITTED' || o.status === 'IN_PRODUCTION'
   ).length;
-
-  const handleStartOrder = () => {
-    setActiveView('branch');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
 
   return (
     <header className="sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b border-slate-200">
@@ -31,16 +26,8 @@ export default function Navbar() {
             </span>
           </div>
 
-          <div className="hidden md:flex items-center gap-4 text-slate-500 text-[11px]">
-            <span className="flex items-center gap-1">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-              Industrial-Grade Quality
-            </span>
-            <span>•</span>
-            <span className="flex items-center gap-1">
-              <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
-              Instant Transparent Pricing
-            </span>
+          <div className="hidden sm:flex items-center gap-2 text-slate-500 text-[11px]">
+            <span>Fast turnaround &bull; Industrial quality &bull; Transparent pricing</span>
           </div>
         </div>
       </div>
@@ -62,99 +49,72 @@ export default function Navbar() {
                   NL
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500 font-medium">Haarlem • Amsterdam • Utrecht</p>
+              <p className="text-[11px] text-slate-500 font-medium">Haarlem &bull; Amsterdam &bull; Utrecht</p>
             </div>
           </button>
 
-          {/* Clean Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-1 text-xs font-semibold text-slate-600">
-            <button
-              onClick={() => setActiveView('landing')}
-              className={`px-3 py-2 rounded-lg transition-colors ${
-                activeView === 'landing'
-                  ? 'text-slate-900 bg-slate-100'
-                  : 'hover:text-slate-900 hover:bg-slate-50'
-              }`}
-            >
-              Overview
-            </button>
+          {/* Right Header Navigation & Actions */}
+          <div className="flex items-center gap-3">
+            {/* Order Queue - ONLY SHOWN WHEN ADMIN IS LOGGED IN */}
+            {currentUser?.role === 'admin' && (
+              <button
+                onClick={() => setActiveView('admin')}
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 border ${
+                  activeView === 'admin'
+                    ? 'bg-orange-50 text-orange-700 border-orange-200 shadow-xs'
+                    : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-200'
+                }`}
+              >
+                <Inbox className="w-3.5 h-3.5 text-orange-600" />
+                <span>Orders Queue</span>
+                {pendingCount > 0 && (
+                  <span className="px-1.5 py-0.2 rounded-full bg-orange-600 text-white text-[10px] font-bold">
+                    {pendingCount}
+                  </span>
+                )}
+              </button>
+            )}
 
-            <button
-              onClick={() => {
-                setOrderType('DIRECT_PRINT');
-                setActiveView('order-a');
-              }}
-              className={`px-3 py-2 rounded-lg transition-colors flex items-center gap-1.5 ${
-                activeView === 'order-a'
-                  ? 'text-orange-600 bg-orange-50 font-bold'
-                  : 'hover:text-slate-900 hover:bg-slate-50'
-              }`}
-            >
-              <span>Have a 3D File (Option A)</span>
-            </button>
+            {/* User Session or Login/Sign up Button */}
+            {currentUser ? (
+              <div className="flex items-center gap-2">
+                <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs">
+                  <div className="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-[10px]">
+                    {currentUser.role === 'admin' ? 'A' : 'U'}
+                  </div>
+                  <div className="text-left leading-tight">
+                    <span className="font-bold text-slate-900 block truncate max-w-[120px]">
+                      {currentUser.name}
+                    </span>
+                    <span className="text-[10px] text-orange-600 font-semibold uppercase tracking-wider">
+                      {currentUser.role === 'admin' ? 'Staff Admin' : 'Customer'}
+                    </span>
+                  </div>
+                </div>
 
-            <button
-              onClick={() => {
-                setOrderType('DESIGN_AND_PRINT');
-                setActiveView('order-b');
-              }}
-              className={`px-3 py-2 rounded-lg transition-colors flex items-center gap-1.5 ${
-                activeView === 'order-b'
-                  ? 'text-orange-600 bg-orange-50 font-bold'
-                  : 'hover:text-slate-900 hover:bg-slate-50'
-              }`}
-            >
-              <span>Need a Design (Option B)</span>
-            </button>
-
-            <button
-              onClick={() => setActiveView('portfolio')}
-              className={`px-3 py-2 rounded-lg transition-colors ${
-                activeView === 'portfolio'
-                  ? 'text-slate-900 bg-slate-100'
-                  : 'hover:text-slate-900 hover:bg-slate-50'
-              }`}
-            >
-              Sample Gallery
-            </button>
-
-            <button
-              onClick={() => setActiveView('reviews')}
-              className={`px-3 py-2 rounded-lg transition-colors ${
-                activeView === 'reviews'
-                  ? 'text-slate-900 bg-slate-100'
-                  : 'hover:text-slate-900 hover:bg-slate-50'
-              }`}
-            >
-              Reviews
-            </button>
-
-            <button
-              onClick={() => setActiveView('admin')}
-              className={`px-3 py-2 rounded-lg transition-colors flex items-center gap-1.5 ${
-                activeView === 'admin'
-                  ? 'text-slate-900 bg-slate-100 font-bold'
-                  : 'hover:text-slate-900 hover:bg-slate-50'
-              }`}
-            >
-              <span>Orders Queue</span>
-              {pendingCount > 0 && (
-                <span className="px-1.5 py-0.2 rounded-full bg-slate-200 text-slate-700 text-[10px] font-bold">
-                  {pendingCount}
-                </span>
-              )}
-            </button>
-          </nav>
-
-          {/* Primary CTA Button */}
-          <div className="flex items-center gap-2.5">
-            <button
-              onClick={handleStartOrder}
-              className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-orange-600 text-white font-semibold text-xs sm:text-sm shadow-sm transition-all hover:shadow flex items-center gap-2"
-            >
-              <span>Start Your Order</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
+                <button
+                  onClick={logout}
+                  title="Log out"
+                  className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-red-50 hover:text-red-700 text-slate-600 text-xs font-bold border border-slate-200 transition-colors flex items-center gap-1.5"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Log out</span>
+                </button>
+              </div>
+            ) : (
+              /* Instead of Start your Order make it Login / Sign up */
+              <button
+                onClick={() => setActiveView('auth')}
+                className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all shadow-xs flex items-center gap-2 ${
+                  activeView === 'auth'
+                    ? 'bg-orange-600 text-white'
+                    : 'bg-slate-900 hover:bg-orange-600 text-white'
+                }`}
+              >
+                <User className="w-4 h-4" />
+                <span>Log in / Sign up</span>
+              </button>
+            )}
           </div>
         </div>
       </div>

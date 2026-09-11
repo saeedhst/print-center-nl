@@ -24,9 +24,21 @@ export type AppView =
   | 'confirmation'
   | 'portfolio'
   | 'reviews'
-  | 'admin';
+  | 'admin'
+  | 'auth';
+
+export interface UserSession {
+  email: string;
+  name: string;
+  role: 'admin' | 'customer';
+}
 
 interface AppState {
+  // Authentication
+  currentUser: UserSession | null;
+  login: (email: string, role: 'admin' | 'customer', name?: string) => void;
+  logout: () => void;
+
   // Navigation & View State
   activeView: AppView;
   setActiveView: (view: AppView) => void;
@@ -114,6 +126,18 @@ const initialBreakdown = calculatePrintPrice({
 });
 
 export const useAppStore = create<AppState>((set, get) => ({
+  currentUser: null,
+  login: (email, role, name) => {
+    const defaultName = role === 'admin' ? 'Studio Operations Admin' : (name || email.split('@')[0]);
+    set({
+      currentUser: { email, role, name: defaultName },
+      activeView: role === 'admin' ? 'admin' : 'landing',
+    });
+  },
+  logout: () => {
+    set({ currentUser: null, activeView: 'landing' });
+  },
+
   activeView: 'landing',
   setActiveView: (view) => set({ activeView: view }),
 
