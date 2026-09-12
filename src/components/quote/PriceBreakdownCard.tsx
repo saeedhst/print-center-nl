@@ -3,7 +3,7 @@
 import React from 'react';
 import { useAppStore } from '@/lib/store';
 import { formatEur, SIMPLE_MATERIALS, DELIVERY_OPTIONS } from '@/lib/pricing';
-import { Clock, Truck, ShieldCheck, ArrowRight, Sparkles, Scale, Layers } from 'lucide-react';
+import { Clock, Truck, ShieldCheck, ArrowRight, Sparkles, Scale, CheckCircle2, Zap } from 'lucide-react';
 
 export default function PriceBreakdownCard() {
   const {
@@ -11,7 +11,6 @@ export default function PriceBreakdownCard() {
     material,
     colorOption,
     deliverySpeed,
-    scaleFactor,
     setActiveView,
   } = useAppStore();
 
@@ -27,59 +26,67 @@ export default function PriceBreakdownCard() {
   };
 
   return (
-    <div className="rounded-2xl bg-white border border-slate-200 p-6 shadow-card flex flex-col justify-between space-y-6 sticky top-24">
-      {/* Card Header */}
+    <div className="rounded-xl bg-white border border-outline-variant p-6 shadow-level-2 flex flex-col justify-between space-y-6 sticky top-24">
+      {/* Header & Turnaround Tag */}
       <div>
-        <div className="flex items-center justify-between pb-4 border-b border-slate-200">
+        <div className="flex items-center justify-between pb-4 border-b border-outline-variant">
           <div>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-              Instant Price Quote
+            <span className="text-[10px] font-bold uppercase tracking-wider font-label-mono-xs text-slate-500 block">
+              INSTANT INDUSTRIAL QUOTE
             </span>
-            <h3 className="text-lg font-extrabold text-slate-900">
-              Live Calculation
+            <h3 className="text-lg font-bold text-on-surface font-headline-sm">
+              Live Production Cost
             </h3>
           </div>
-          <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 font-bold border border-emerald-200 flex items-center gap-1">
-            <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-            1-Day Dispatch
+
+          <span className="text-xs px-2.5 py-1 rounded-full bg-primary/10 text-primary font-bold border border-primary/20 flex items-center gap-1.5">
+            <Zap className="w-3.5 h-3.5 text-primary fill-primary" />
+            24h Dispatch
           </span>
         </div>
 
-        {/* Required 4 Metrics Overview */}
-        <div className="mt-4 grid grid-cols-2 gap-3 pb-4 border-b border-slate-100">
-          <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
-            <span className="text-[10px] text-slate-500 font-semibold block uppercase">Filament Weight</span>
-            <span className="text-base font-extrabold text-slate-900 font-mono flex items-center gap-1.5 mt-0.5">
-              <Scale className="w-4 h-4 text-slate-500" />
-              {priceBreakdown.weightGrams} grams
+        {/* 2 Primary Telemetry Readouts */}
+        <div className="mt-4 grid grid-cols-2 gap-3 pb-4 border-b border-outline-variant">
+          <div className="p-3 rounded bg-surface-container-low border border-outline-variant">
+            <span className="text-[10px] text-slate-500 font-label-mono-xs uppercase block font-semibold">
+              Filament Weight
+            </span>
+            <span className="text-base font-bold text-on-surface font-label-mono flex items-center gap-1.5 mt-0.5">
+              <Scale className="w-4 h-4 text-primary" />
+              {priceBreakdown.weightGrams} <span className="text-xs text-slate-500 font-normal">grams</span>
             </span>
           </div>
 
-          <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
-            <span className="text-[10px] text-slate-500 font-semibold block uppercase">Estimated Print Time</span>
-            <span className="text-base font-extrabold text-slate-900 font-mono flex items-center gap-1.5 mt-0.5">
-              <Clock className="w-4 h-4 text-slate-500" />
+          <div className="p-3 rounded bg-surface-container-low border border-outline-variant">
+            <span className="text-[10px] text-slate-500 font-label-mono-xs uppercase block font-semibold">
+              Machine Runtime
+            </span>
+            <span className="text-base font-bold text-on-surface font-label-mono flex items-center gap-1.5 mt-0.5">
+              <Clock className="w-4 h-4 text-primary" />
               {estHours > 0 ? `${estHours}h ` : ''}{estMins}m
             </span>
           </div>
         </div>
 
-        {/* Estimated Delivery Date Callout */}
-        <div className="mt-4 p-3.5 rounded-xl bg-orange-50 border border-orange-200 flex items-center gap-3">
-          <Truck className="w-5 h-5 text-orange-600 shrink-0" />
+        {/* Local Randstad Dispatch Banner */}
+        <div className="mt-4 p-3.5 rounded bg-primary/5 border border-primary/20 flex items-start gap-3">
+          <Truck className="w-4 h-4 text-primary shrink-0 mt-0.5" />
           <div className="text-xs">
-            <span className="text-orange-950 font-bold block">Estimated Delivery Date:</span>
-            <span className="text-orange-800 font-medium">
-              {priceBreakdown.estimatedDeliveryDate}
+            <span className="text-on-surface font-bold block">
+              ⚡ Amsterdam Precision Hub (Singel 382)
+            </span>
+            <span className="text-slate-600 mt-0.5 block leading-relaxed">
+              Dispatched in 1 working day across Haarlem, Amsterdam &amp; Utrecht.
+              Estimated delivery: <strong className="text-primary font-semibold">{priceBreakdown.estimatedDeliveryDate}</strong>
             </span>
           </div>
         </div>
 
-        {/* Math Itemization Breakdown */}
+        {/* Mathematical Cost Itemization */}
         <div className="mt-4 space-y-2.5 text-xs text-slate-600">
           <div className="flex items-center justify-between">
             <span>Base Setup &amp; Slicing QA</span>
-            <span className="font-mono text-slate-900 font-semibold">
+            <span className="font-label-mono text-on-surface font-semibold">
               {formatEur(priceBreakdown.baseSetupFeeEur)}
             </span>
           </div>
@@ -88,66 +95,79 @@ export default function PriceBreakdownCard() {
             <span>
               Material ({mat.simpleName} &bull; {priceBreakdown.weightGrams}g)
             </span>
-            <span className="font-mono text-slate-900 font-semibold">
+            <span className="font-label-mono text-on-surface font-semibold">
               {formatEur(priceBreakdown.materialCostEur)}
             </span>
           </div>
 
           <div className="flex items-center justify-between">
-            <span>Machine Fleet Runtime</span>
-            <span className="font-mono text-slate-900 font-semibold">
+            <span>Machine Fleet Runtime ({estHours > 0 ? `${estHours}h ` : ''}{estMins}m)</span>
+            <span className="font-label-mono text-on-surface font-semibold">
               {formatEur(priceBreakdown.machineCostEur)}
             </span>
           </div>
 
           {priceBreakdown.colorMultiplier > 1.0 && (
-            <div className="flex items-center justify-between text-orange-700 bg-orange-50/70 p-2 rounded-lg border border-orange-200">
+            <div className="flex items-center justify-between text-primary bg-primary/5 p-2 rounded border border-primary/20">
               <span className="font-semibold">AMS Multi-Material Multiplier</span>
-              <span className="font-mono font-bold">+35%</span>
+              <span className="font-label-mono font-bold">+35%</span>
             </div>
           )}
 
-          <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+          <div className="flex items-center justify-between pt-2 border-t border-outline-variant">
             <span>Shipping ({deliveryTier.name.split(' (')[0]})</span>
-            <span className="font-mono text-slate-900 font-semibold">
-              {priceBreakdown.shippingCostEur === 0 ? 'FREE' : formatEur(priceBreakdown.shippingCostEur)}
+            <span className="font-label-mono text-on-surface font-semibold">
+              {priceBreakdown.shippingCostEur === 0 ? (
+                <span className="text-emerald-700 font-bold">FREE</span>
+              ) : (
+                formatEur(priceBreakdown.shippingCostEur)
+              )}
             </span>
           </div>
         </div>
       </div>
 
       {/* Total Price & Checkout Action */}
-      <div className="pt-4 border-t border-slate-200 space-y-4">
+      <div className="pt-4 border-t border-outline-variant space-y-4">
         <div className="flex items-baseline justify-between">
           <div>
-            <span className="text-xs text-slate-500 block">Total Price (Incl. 21% BTW)</span>
-            <span className="text-[11px] text-emerald-700 font-medium flex items-center gap-1 mt-0.5">
-              <ShieldCheck className="w-3.5 h-3.5" /> 100% Reprint Guarantee
+            <span className="text-xs font-label-mono-xs uppercase text-slate-500 block font-semibold">
+              Total Price (Incl. 21% BTW)
+            </span>
+            <span className="text-[11px] text-emerald-700 font-semibold flex items-center gap-1 mt-0.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+              100% Reprint Guarantee
             </span>
           </div>
           <div className="text-right">
-            <span className="text-3xl font-black text-slate-900 font-mono">
+            <span className="text-3xl font-black text-on-surface font-label-mono tracking-tight">
               {formatEur(priceBreakdown.totalPriceEur)}
             </span>
           </div>
         </div>
 
+        {/* Primary CTA Button */}
         <button
           onClick={handleProceedToCheckout}
-          className="w-full py-4 px-6 rounded-xl bg-slate-900 hover:bg-orange-600 text-white font-bold text-sm shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 group"
+          className="w-full py-3.5 px-6 rounded bg-primary hover:bg-primary-hover active:bg-[#003cb8] text-white font-bold text-sm shadow-level-1 hover:shadow-level-2 transition-all flex items-center justify-center gap-2 group cursor-pointer"
         >
-          <span>Proceed to Checkout</span>
+          <span>Proceed to Instant Checkout</span>
           <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </button>
 
+        {/* Payment and Local Dutch Trust Badges */}
         <div className="pt-1 text-[11px] text-slate-500 text-center space-y-1">
-          <p>Dispatched in 1 working day across Haarlem, Amsterdam &amp; Utrecht.</p>
-          <div className="flex items-center justify-center gap-3 text-slate-400">
+          <p className="font-medium text-slate-600">
+            Industrial print farm located at Singel 382, Amsterdam
+          </p>
+          <div className="flex items-center justify-center gap-2.5 font-label-mono-xs text-slate-400 pt-0.5">
             <span>iDEAL</span>
+            <span>&bull;</span>
+            <span>Bancontact</span>
             <span>&bull;</span>
             <span>Credit Card</span>
             <span>&bull;</span>
-            <span>Bancontact</span>
+            <span>SEPA</span>
           </div>
         </div>
       </div>

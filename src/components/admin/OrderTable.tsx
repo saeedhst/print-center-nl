@@ -49,31 +49,36 @@ export default function OrderTable() {
     switch (status) {
       case 'QUOTE_SUBMITTED':
         return (
-          <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200 text-[10px] font-bold">
+          <span className="px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-bold font-label-mono-xs inline-flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
             Pending Review
           </span>
         );
       case 'APPROVED':
         return (
-          <span className="px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 border border-blue-200 text-[10px] font-bold">
+          <span className="px-2 py-0.5 rounded bg-sky-50 text-sky-800 border border-sky-200 text-[10px] font-bold font-label-mono-xs inline-flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-sky-500" />
             Quote Approved
           </span>
         );
       case 'IN_PRODUCTION':
         return (
-          <span className="px-2.5 py-0.5 rounded-full bg-orange-100 text-orange-800 border border-orange-200 text-[10px] font-bold">
+          <span className="px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20 text-[10px] font-bold font-label-mono-xs inline-flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
             In Production
           </span>
         );
       case 'DISPATCHED':
         return (
-          <span className="px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-800 border border-purple-200 text-[10px] font-bold">
-            Dispatched (1-Day Courier)
+          <span className="px-2 py-0.5 rounded bg-indigo-50 text-indigo-800 border border-indigo-200 text-[10px] font-bold font-label-mono-xs inline-flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+            Dispatched (24h)
           </span>
         );
       case 'COMPLETED':
         return (
-          <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 text-[10px] font-bold">
+          <span className="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-bold font-label-mono-xs inline-flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
             Delivered
           </span>
         );
@@ -113,25 +118,25 @@ export default function OrderTable() {
             <div className="text-2xl font-extrabold text-slate-900 mt-1">{totalCount}</div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-soft">
-            <span className="text-xs text-amber-700 font-semibold">Pending CAD Quotes</span>
-            <div className="text-2xl font-extrabold text-amber-700 mt-1">{pendingCadCount}</div>
+          <div className="p-4 rounded-xl bg-white border border-outline-variant shadow-level-1">
+            <span className="text-xs text-amber-700 font-semibold font-label-mono-xs uppercase">Pending CAD Quotes</span>
+            <div className="text-2xl font-bold text-amber-700 mt-1 font-label-mono">{pendingCadCount}</div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-soft">
-            <span className="text-xs text-orange-700 font-semibold">In Production</span>
-            <div className="text-2xl font-extrabold text-orange-700 mt-1">{inProductionCount}</div>
+          <div className="p-4 rounded-xl bg-white border border-outline-variant shadow-level-1">
+            <span className="text-xs text-primary font-semibold font-label-mono-xs uppercase">In Production</span>
+            <div className="text-2xl font-bold text-primary mt-1 font-label-mono">{inProductionCount}</div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-soft">
-            <span className="text-xs text-emerald-700 font-semibold">Dispatched / Done</span>
-            <div className="text-2xl font-extrabold text-emerald-700 mt-1">{completedCount}</div>
+          <div className="p-4 rounded-xl bg-white border border-outline-variant shadow-level-1">
+            <span className="text-xs text-emerald-700 font-semibold font-label-mono-xs uppercase">Dispatched / Done</span>
+            <div className="text-2xl font-bold text-emerald-700 mt-1 font-label-mono">{completedCount}</div>
           </div>
         </div>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-soft flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="p-4 rounded-xl bg-white border border-outline-variant shadow-level-1 flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="relative w-full md:w-80">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
           <input
@@ -139,7 +144,7 @@ export default function OrderTable() {
             placeholder="Search by customer, ID, or city..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-orange-600"
+            className="w-full pl-10 pr-4 py-2 text-xs rounded bg-surface-container-low border border-outline-variant text-on-surface placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-body-sm"
           />
         </div>
 
@@ -147,7 +152,7 @@ export default function OrderTable() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="text-xs rounded-xl bg-slate-50 border border-slate-200 py-2 px-3 text-slate-700 font-medium focus:outline-none focus:border-orange-600"
+            className="text-xs rounded bg-surface-container-low border border-outline-variant py-2 px-3 text-slate-700 font-medium focus:outline-none focus:border-primary font-body-sm cursor-pointer"
           >
             <option value="ALL">All Statuses</option>
             <option value="QUOTE_SUBMITTED">Quote Submitted</option>
@@ -160,11 +165,11 @@ export default function OrderTable() {
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="text-xs rounded-xl bg-slate-50 border border-slate-200 py-2 px-3 text-slate-700 font-medium focus:outline-none focus:border-orange-600"
+            className="text-xs rounded bg-surface-container-low border border-outline-variant py-2 px-3 text-slate-700 font-medium focus:outline-none focus:border-primary font-body-sm cursor-pointer"
           >
-            <option value="ALL">All Options</option>
-            <option value="DIRECT_PRINT">Option A: 3D File</option>
-            <option value="DESIGN_AND_PRINT">Option B: CAD Design</option>
+            <option value="ALL">All Tracks</option>
+            <option value="DIRECT_PRINT">Track 01: 3D File</option>
+            <option value="DESIGN_AND_PRINT">Track 02: CAD Design</option>
           </select>
         </div>
       </div>
@@ -225,21 +230,21 @@ export default function OrderTable() {
                       <td className="py-4 px-4">
                         {isDirect && directDetails ? (
                           <div className="space-y-0.5">
-                            <span className="inline-flex items-center gap-1 font-bold text-slate-900 text-xs">
-                              <UploadCloud className="w-3.5 h-3.5 text-orange-600" />
+                            <span className="inline-flex items-center gap-1 font-bold text-on-surface text-xs">
+                              <UploadCloud className="w-3.5 h-3.5 text-primary" />
                               {directDetails.fileName}
                             </span>
-                            <div className="text-[10px] text-slate-500 font-medium">
+                            <div className="text-[10px] text-slate-500 font-label-mono-xs">
                               {directDetails.material} &bull; {directDetails.scaleFactor * 100}% Scale &bull; {directDetails.volumeCm3} cm&sup3;
                             </div>
                           </div>
                         ) : cadDetails ? (
                           <div className="space-y-0.5">
-                            <span className="inline-flex items-center gap-1 font-bold text-blue-700 text-xs">
-                              <PenTool className="w-3.5 h-3.5 text-blue-600" />
+                            <span className="inline-flex items-center gap-1 font-bold text-primary text-xs">
+                              <PenTool className="w-3.5 h-3.5 text-primary" />
                               CAD Tier: {cadDetails.estimatedComplexity}
                             </span>
-                            <div className="text-[10px] text-slate-500 line-clamp-1 max-w-[200px]">
+                            <div className="text-[10px] text-slate-500 truncate max-w-[220px]">
                               {cadDetails.description}
                             </div>
                           </div>
@@ -253,7 +258,7 @@ export default function OrderTable() {
                           <select
                             value={order.status}
                             onChange={(e) => updateOrderStatus(order.id, e.target.value as OrderStatus)}
-                            className="mt-1 text-[10px] bg-slate-50 border border-slate-200 text-slate-600 rounded px-1.5 py-0.5 focus:outline-none"
+                            className="mt-1 text-[10px] bg-slate-50 border border-slate-200 text-slate-600 rounded px-1.5 py-0.5 focus:outline-none cursor-pointer"
                           >
                             <option value="QUOTE_SUBMITTED">Quote Submitted</option>
                             <option value="APPROVED">Approved</option>
@@ -264,15 +269,21 @@ export default function OrderTable() {
                         </div>
                       </td>
 
-                      <td className="py-4 px-4 whitespace-nowrap font-mono font-bold text-slate-900">
-                        {formatEur(orderPrice)}
+                      <td className="py-4 px-4 whitespace-nowrap text-xs font-bold text-on-surface font-label-mono">
+                        {isDirect && directDetails ? (
+                          formatEur(directDetails.calculatedPriceEur)
+                        ) : cadDetails?.quotedPriceEur ? (
+                          formatEur(cadDetails.quotedPriceEur)
+                        ) : (
+                          <span className="text-amber-700 italic font-normal">Pending Quote</span>
+                        )}
                       </td>
 
                       <td className="py-4 px-4 whitespace-nowrap text-right">
                         {!isDirect && cadDetails && (
                           <button
                             onClick={() => setSelectedCadOrder(order)}
-                            className="px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-bold transition-colors ml-auto"
+                            className="px-3 py-1.5 rounded bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 text-xs font-bold transition-colors ml-auto cursor-pointer"
                           >
                             Review &amp; Price
                           </button>
@@ -281,7 +292,7 @@ export default function OrderTable() {
                         {isDirect && (
                           <button
                             onClick={() => updateOrderStatus(order.id, 'IN_PRODUCTION')}
-                            className="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-orange-600 text-white text-xs font-bold transition-colors ml-auto"
+                            className="px-3 py-1.5 rounded bg-primary hover:bg-primary-hover active:bg-[#003cb8] text-white text-xs font-bold transition-colors ml-auto cursor-pointer shadow-xs"
                           >
                             Start Print
                           </button>

@@ -119,7 +119,7 @@ export default function AuthPage() {
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="Jan de Vries"
-                className="w-full rounded-xl bg-slate-50 border border-slate-200 p-3 text-slate-900 focus:outline-none focus:border-orange-600"
+                className="w-full rounded bg-surface-container-low border border-outline-variant p-2.5 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-body-sm"
               />
             </div>
           )}
@@ -135,7 +135,7 @@ export default function AuthPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="name@example.nl (or admin@printlab.nl)"
-              className="w-full rounded-xl bg-slate-50 border border-slate-200 p-3 text-slate-900 focus:outline-none focus:border-orange-600"
+              className="w-full rounded bg-surface-container-low border border-outline-variant p-2.5 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-body-sm"
             />
           </div>
 
@@ -150,7 +150,7 @@ export default function AuthPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full rounded-xl bg-slate-50 border border-slate-200 p-3 text-slate-900 focus:outline-none focus:border-orange-600"
+              className="w-full rounded bg-surface-container-low border border-outline-variant p-2.5 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-body-sm"
             />
           </div>
 
@@ -164,10 +164,10 @@ export default function AuthPage() {
               <button
                 type="button"
                 onClick={() => setRoleOption('customer')}
-                className={`py-2 px-3 rounded-xl border text-center font-bold text-xs transition-all ${
+                className={`py-2 px-3 rounded border text-center font-bold text-xs transition-all cursor-pointer ${
                   roleOption === 'customer'
-                    ? 'bg-slate-900 text-white border-slate-900'
-                    : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                    ? 'bg-on-surface text-white border-on-surface'
+                    : 'bg-white text-slate-700 border-outline hover:bg-slate-50'
                 }`}
               >
                 Customer
@@ -175,10 +175,10 @@ export default function AuthPage() {
               <button
                 type="button"
                 onClick={() => setRoleOption('admin')}
-                className={`py-2 px-3 rounded-xl border text-center font-bold text-xs transition-all ${
+                className={`py-2 px-3 rounded border text-center font-bold text-xs transition-all cursor-pointer ${
                   roleOption === 'admin'
-                    ? 'bg-orange-600 text-white border-orange-600'
-                    : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                    ? 'bg-primary text-white border-primary'
+                    : 'bg-white text-slate-700 border-outline hover:bg-slate-50'
                 }`}
               >
                 Admin (Staff)
@@ -188,7 +188,7 @@ export default function AuthPage() {
 
           <button
             type="submit"
-            className="w-full py-3.5 px-4 rounded-xl bg-slate-900 hover:bg-orange-600 text-white font-bold text-sm shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 mt-2"
+            className="w-full py-3 px-4 rounded bg-primary hover:bg-primary-hover active:bg-[#003cb8] text-white font-bold text-sm shadow-level-1 hover:shadow-level-2 transition-all flex items-center justify-center gap-2 mt-2 cursor-pointer"
           >
             <span>{mode === 'login' ? 'Log In' : 'Create Account'}</span>
             <ArrowRight className="w-4 h-4" />
@@ -197,7 +197,7 @@ export default function AuthPage() {
 
         {/* 1-Click Demo Buttons for Convenience */}
         <div className="pt-4 border-t border-slate-200 space-y-2.5">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block text-center">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block text-center font-label-mono-xs">
             One-Click Demo Access
           </span>
 
@@ -205,16 +205,16 @@ export default function AuthPage() {
             <button
               type="button"
               onClick={() => handleQuickLogin('admin')}
-              className="py-2.5 px-3 rounded-xl bg-orange-50 hover:bg-orange-100 text-orange-800 border border-orange-200 text-xs font-bold transition-colors flex items-center justify-center gap-1.5"
+              className="py-2.5 px-3 rounded bg-primary/10 hover:bg-primary/15 text-primary border border-primary/20 text-xs font-bold transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
             >
-              <ShieldCheck className="w-3.5 h-3.5 text-orange-600" />
+              <ShieldCheck className="w-3.5 h-3.5 text-primary" />
               <span>Demo Admin</span>
             </button>
 
             <button
               type="button"
               onClick={() => handleQuickLogin('customer')}
-              className="py-2.5 px-3 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-800 border border-slate-200 text-xs font-bold transition-colors flex items-center justify-center gap-1.5"
+              className="py-2.5 px-3 rounded bg-slate-50 hover:bg-slate-100 text-slate-800 border border-slate-200 text-xs font-bold transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <User className="w-3.5 h-3.5 text-slate-600" />
               <span>Demo Customer</span>

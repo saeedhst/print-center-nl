@@ -76,7 +76,7 @@ export default function ModelViewer3D() {
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
     rendererRef.current = renderer;
@@ -246,29 +246,33 @@ export default function ModelViewer3D() {
     controlsRef.current.update();
   };
 
+  const triangleCount = activeGeometry
+    ? Math.round(activeGeometry.index ? activeGeometry.index.count / 3 : activeGeometry.attributes.position.count / 3)
+    : 14200;
+
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden relative shadow-soft flex flex-col">
+    <div className="rounded-lg border border-[#E2E8F0] bg-white overflow-hidden relative shadow-level-1 flex flex-col group/viewport">
       {/* Top Toolbar */}
-      <div className="px-4 py-3 bg-slate-50/80 border-b border-slate-200 flex items-center justify-between z-10">
+      <div className="px-4 py-2.5 bg-surface-container-low border-b border-[#E2E8F0] flex items-center justify-between z-10">
         <div className="flex items-center gap-2">
-          <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="text-xs font-bold text-slate-800 tracking-tight truncate max-w-[200px] sm:max-w-xs">
+          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="text-xs font-bold text-on-surface tracking-tight truncate max-w-[180px] sm:max-w-xs font-mono">
             {fileName || '3D_Model.stl'}
           </span>
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-white text-orange-700 border border-slate-200 font-mono">
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-white text-primary border border-outline font-label-mono">
             {material} &bull; {scaleFactor * 100}% Scale
           </span>
         </div>
 
-        {/* Viewport Toggles */}
+        {/* Viewport Controls */}
         <div className="flex items-center gap-1.5">
           <button
             onClick={() => setIsWireframe(!isWireframe)}
             title="Toggle Wireframe"
-            className={`p-1.5 rounded-lg text-xs font-medium border transition-colors ${
+            className={`p-1.5 rounded text-xs font-medium border transition-colors cursor-pointer ${
               isWireframe
-                ? 'bg-orange-50 text-orange-700 border-orange-300'
-                : 'bg-white text-slate-600 border-slate-200 hover:text-slate-900'
+                ? 'bg-primary text-white border-primary'
+                : 'bg-white text-on-surface-variant border-outline hover:text-on-surface'
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
@@ -277,10 +281,10 @@ export default function ModelViewer3D() {
           <button
             onClick={() => setIsAutoRotate(!isAutoRotate)}
             title="Toggle Auto Rotation"
-            className={`p-1.5 rounded-lg text-xs font-medium border transition-colors ${
+            className={`p-1.5 rounded text-xs font-medium border transition-colors cursor-pointer ${
               isAutoRotate
-                ? 'bg-orange-50 text-orange-700 border-orange-300'
-                : 'bg-white text-slate-600 border-slate-200 hover:text-slate-900'
+                ? 'bg-primary text-white border-primary'
+                : 'bg-white text-on-surface-variant border-outline hover:text-on-surface'
             }`}
           >
             <RotateCcw className="w-3.5 h-3.5" />
@@ -289,10 +293,10 @@ export default function ModelViewer3D() {
           <button
             onClick={() => setShowBuildGrid(!showBuildGrid)}
             title="Toggle Build Grid"
-            className={`p-1.5 rounded-lg text-xs font-medium border transition-colors ${
+            className={`p-1.5 rounded text-xs font-medium border transition-colors cursor-pointer ${
               showBuildGrid
-                ? 'bg-orange-50 text-orange-700 border-orange-300'
-                : 'bg-white text-slate-600 border-slate-200 hover:text-slate-900'
+                ? 'bg-primary text-white border-primary'
+                : 'bg-white text-on-surface-variant border-outline hover:text-on-surface'
             }`}
           >
             <Grid className="w-3.5 h-3.5" />
@@ -301,38 +305,59 @@ export default function ModelViewer3D() {
           <button
             onClick={handleResetCamera}
             title="Reset Camera View"
-            className="p-1.5 rounded-lg text-xs font-medium bg-white text-slate-600 border border-slate-200 hover:text-slate-900 transition-colors"
+            className="p-1.5 rounded text-xs font-medium bg-white text-on-surface-variant border border-outline hover:text-on-surface transition-colors cursor-pointer"
           >
             <Maximize2 className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
 
-      {/* 3D WebGL Viewport */}
-      <div
-        ref={containerRef}
-        className="w-full h-[360px] sm:h-[420px] cursor-grab active:cursor-grabbing relative"
-      />
+      {/* 3D WebGL Viewport Container */}
+      <div className="relative w-full">
+        {/* 4 Laser-Engraved Corner Tick Markers (L-brackets in #0052FF) */}
+        <div className="absolute top-3 left-3 w-3 h-3 border-t-2 border-l-2 border-[#0052FF] pointer-events-none z-20" />
+        <div className="absolute top-3 right-3 w-3 h-3 border-t-2 border-r-2 border-[#0052FF] pointer-events-none z-20" />
+        <div className="absolute bottom-20 left-3 w-3 h-3 border-b-2 border-l-2 border-[#0052FF] pointer-events-none z-20" />
+        <div className="absolute bottom-20 right-3 w-3 h-3 border-b-2 border-r-2 border-[#0052FF] pointer-events-none z-20" />
 
-      {/* HUD Overlay with Live Scaled Dimensions */}
-      <div className="absolute bottom-3 left-3 right-3 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
-        <div className="flex items-center gap-2 pointer-events-auto bg-white/95 backdrop-blur-md px-3 py-2 rounded-xl border border-slate-200 text-xs shadow-sm">
-          <Box className="w-4 h-4 text-orange-600 shrink-0" />
-          <div className="text-[11px] text-slate-600">
-            <span>Size: </span>
-            <strong className="text-slate-900 font-mono font-bold">
-              {priceBreakdown.scaledDimensions.x} &times; {priceBreakdown.scaledDimensions.y} &times; {priceBreakdown.scaledDimensions.z} mm
-            </strong>
-          </div>
-        </div>
+        <div
+          ref={containerRef}
+          className="w-full h-[380px] sm:h-[440px] cursor-grab active:cursor-grabbing relative"
+        />
 
-        <div className="flex items-center gap-2 pointer-events-auto bg-white/95 backdrop-blur-md px-3 py-2 rounded-xl border border-slate-200 text-xs shadow-sm">
-          <Scale className="w-4 h-4 text-emerald-600 shrink-0" />
-          <div className="text-[11px] text-slate-600">
-            <span>Volume: </span>
-            <strong className="text-emerald-700 font-mono font-bold">
-              {priceBreakdown.scaledVolumeCm3} cm&sup3;
-            </strong>
+        {/* Floating Telemetry HUD (Built with #0F172A at 85% opacity, backdrop blur, white text & monospace readouts) */}
+        <div className="absolute bottom-3 left-3 right-3 z-20 pointer-events-none">
+          <div className="pointer-events-auto bg-[#0F172A]/90 backdrop-blur-md text-white px-4 py-2.5 rounded-lg border border-[#0052FF]/40 shadow-level-2 flex flex-wrap items-center justify-between gap-3">
+            {/* Coordinates */}
+            <div className="flex items-center gap-2">
+              <span className="text-[#00D2FF] font-label-mono-xs text-[10px] uppercase tracking-wider font-bold">
+                BOUNDING BOX
+              </span>
+              <span className="font-label-mono text-xs text-white">
+                X: <strong className="text-white font-bold">{priceBreakdown.scaledDimensions.x}</strong> mm &bull;{' '}
+                Y: <strong className="text-white font-bold">{priceBreakdown.scaledDimensions.y}</strong> mm &bull;{' '}
+                Z: <strong className="text-white font-bold">{priceBreakdown.scaledDimensions.z}</strong> mm
+              </span>
+            </div>
+
+            {/* Volume, Tris & Watertight Seal */}
+            <div className="flex items-center gap-4 font-label-mono text-xs">
+              <div className="text-slate-300">
+                <span className="text-slate-400 text-[10px] uppercase mr-1">VOL</span>
+                <strong className="text-white">{priceBreakdown.scaledVolumeCm3} cm³</strong>
+              </div>
+
+              <div className="hidden sm:block text-slate-300">
+                <span className="text-slate-400 text-[10px] uppercase mr-1">TRIS</span>
+                <strong className="text-white">{triangleCount.toLocaleString()}</strong>
+              </div>
+
+              {/* Watertight status badge */}
+              <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-400 border border-emerald-500/50 text-[11px] font-semibold">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span>Watertight</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>

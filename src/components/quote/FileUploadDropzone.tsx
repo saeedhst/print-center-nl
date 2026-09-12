@@ -8,7 +8,7 @@ import {
   getBoundingBoxDimensions,
   PRESET_MODELS,
 } from '@/lib/meshUtils';
-import { UploadCloud, CheckCircle2, Sparkles, AlertCircle, Loader2 } from 'lucide-react';
+import { UploadCloud, CheckCircle2, Sparkles, AlertCircle, Loader2, FileCheck, Layers } from 'lucide-react';
 
 export default function FileUploadDropzone() {
   const {
@@ -71,7 +71,7 @@ export default function FileUploadDropzone() {
 
       setModelGeometry(preset.fileName, geometry, dims, volume, preset.id);
       setIsLoadingFile(false);
-    }, 150);
+    }, 120);
   };
 
   return (
@@ -85,10 +85,10 @@ export default function FileUploadDropzone() {
         onDragLeave={() => setIsDragging(false)}
         onDrop={onDrop}
         onClick={() => fileInputRef.current?.click()}
-        className={`relative border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all bg-white ${
+        className={`relative border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all bg-white ${
           isDragging
-            ? 'border-orange-600 bg-orange-50/50 scale-[1.01]'
-            : 'border-slate-300 hover:border-slate-400 hover:bg-slate-50/70 shadow-xs'
+            ? 'border-primary bg-primary/5 scale-[1.005]'
+            : 'border-outline hover:border-primary hover:bg-slate-50/70 shadow-level-1'
         }`}
       >
         <input
@@ -104,48 +104,55 @@ export default function FileUploadDropzone() {
         />
 
         <div className="flex flex-col items-center justify-center space-y-3">
-          <div className="w-12 h-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center shadow-xs">
+          <div className="w-12 h-12 rounded bg-primary/10 text-primary flex items-center justify-center border border-primary/20">
             {isLoadingFile ? (
-              <Loader2 className="w-6 h-6 animate-spin text-orange-600" />
+              <Loader2 className="w-6 h-6 animate-spin text-primary" />
             ) : (
               <UploadCloud className="w-6 h-6" />
             )}
           </div>
 
           <div>
-            <p className="text-sm font-bold text-slate-900">
-              Drag &amp; drop your 3D file here, or <span className="text-orange-600 underline">browse your files</span>
+            <p className="text-sm font-bold text-on-surface">
+              Drag &amp; drop your CAD or 3D mesh here, or <span className="text-primary underline font-semibold">browse local files</span>
             </p>
-            <p className="text-xs text-slate-500 mt-1">
-              Supports <strong>.STL</strong>, <strong>.OBJ</strong>, and <strong>.3MF</strong> (Up to 100MB)
-            </p>
+            <div className="flex items-center justify-center gap-1.5 font-label-mono-xs text-xs text-slate-500 mt-1.5">
+              <span>SUPPORTED FORMATS:</span>
+              <span className="font-bold text-on-surface bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded">.STL</span>
+              <span className="font-bold text-on-surface bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded">.OBJ</span>
+              <span className="font-bold text-on-surface bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded">.3MF</span>
+              <span className="text-slate-400 font-normal">(Up to 100MB)</span>
+            </div>
           </div>
 
-          <div className="flex items-center gap-4 text-[11px] text-slate-500 pt-1">
-            <span className="flex items-center gap-1 text-emerald-700 font-medium">
+          <div className="flex items-center gap-3 text-[11px] font-label-mono-xs text-slate-500 pt-1">
+            <span className="flex items-center gap-1 text-emerald-700 font-semibold">
               <CheckCircle2 className="w-3.5 h-3.5" /> Direct In-Browser Inspection
             </span>
             <span>&bull;</span>
             <span className="text-slate-600">
-              Instant mm &amp; cm&sup3; calculation
+              Automated Watertight &amp; Slicing Analysis
             </span>
           </div>
         </div>
 
         {errorMessage && (
-          <div className="mt-4 p-2.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2 justify-center">
+          <div className="mt-4 p-2.5 rounded bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2 justify-center">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{errorMessage}</span>
           </div>
         )}
       </div>
 
-      {/* Preset sample model quick-selector */}
+      {/* Benchmark Sample Model Selector */}
       <div className="pt-1">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-            No file at hand? Try a benchmark 3D sample:
+          <span className="text-xs font-bold text-on-surface flex items-center gap-1.5 font-label-mono uppercase tracking-wider">
+            <Sparkles className="w-3.5 h-3.5 text-primary" />
+            Or test with a benchmark 3D sample:
+          </span>
+          <span className="text-[11px] font-label-mono-xs text-slate-400">
+            Instant load &bull; Zero upload needed
           </span>
         </div>
 
@@ -160,14 +167,14 @@ export default function FileUploadDropzone() {
                   e.stopPropagation();
                   handlePresetSelect(preset.id);
                 }}
-                className={`p-2.5 rounded-xl text-left border transition-all text-xs ${
+                className={`p-2.5 rounded text-left border transition-all text-xs cursor-pointer ${
                   isSelected
-                    ? 'bg-orange-50 border-orange-500 text-slate-900 shadow-xs ring-1 ring-orange-500'
-                    : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-50'
+                    ? 'bg-primary/10 border-primary text-on-surface shadow-xs ring-1 ring-primary'
+                    : 'bg-white border-outline-variant text-on-surface hover:border-slate-300 hover:bg-slate-50'
                 }`}
               >
-                <div className="font-bold text-slate-900 truncate">{preset.name.split(' (')[0]}</div>
-                <div className="text-[10px] text-slate-500 mt-0.5">{preset.tag}</div>
+                <div className="font-bold text-on-surface truncate">{preset.name.split(' (')[0]}</div>
+                <div className="text-[10px] font-label-mono-xs text-slate-500 mt-0.5">{preset.tag}</div>
               </button>
             );
           })}

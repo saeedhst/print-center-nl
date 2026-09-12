@@ -98,7 +98,7 @@ export default function QuoteReviewModal({ order, onClose }: Props) {
                   step="5"
                   value={priceInput}
                   onChange={(e) => setPriceInput(Number(e.target.value))}
-                  className="w-full pl-8 pr-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-mono text-sm focus:border-orange-600 outline-none"
+                  className="w-full pl-8 pr-3 py-2 rounded bg-surface-container-low border border-outline-variant text-on-surface font-label-mono text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none"
                 />
               </div>
             </div>
@@ -111,13 +111,13 @@ export default function QuoteReviewModal({ order, onClose }: Props) {
                 value={engineerNotes}
                 onChange={(e) => setEngineerNotes(e.target.value)}
                 rows={2}
-                className="w-full rounded-xl bg-slate-50 border border-slate-200 p-2.5 text-slate-800 focus:border-orange-600 outline-none text-xs"
+                className="w-full rounded bg-surface-container-low border border-outline-variant p-2.5 text-slate-800 focus:border-primary focus:ring-1 focus:ring-primary outline-none text-xs"
               />
             </div>
           </div>
 
           {isSuccess && (
-            <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2">
+            <div className="p-3 rounded bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
               <span>Quote locked and email notification simulated to {order.customer.email}!</span>
             </div>
@@ -126,14 +126,14 @@ export default function QuoteReviewModal({ order, onClose }: Props) {
           <div className="pt-3 border-t border-slate-200 flex items-center justify-between">
             <button
               onClick={onClose}
-              className="px-4 py-2 rounded-xl text-slate-600 hover:text-slate-900 font-bold"
+              className="px-4 py-2 rounded text-slate-600 hover:text-on-surface font-bold text-xs cursor-pointer"
             >
               Cancel
             </button>
 
             <button
               onClick={handleSaveAndSendQuote}
-              className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-orange-600 text-white font-bold flex items-center gap-2 shadow-xs"
+              className="px-5 py-2.5 rounded bg-primary hover:bg-primary-hover active:bg-[#003cb8] text-white font-bold text-xs flex items-center gap-2 shadow-level-1 cursor-pointer"
             >
               <Send className="w-4 h-4" />
               <span>Approve &amp; Send 1-Day Quote</span>

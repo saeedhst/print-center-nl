@@ -110,7 +110,7 @@ export default function CheckoutPage() {
                   value={customer.fullName}
                   onChange={(e) => setCustomer({ fullName: e.target.value })}
                   placeholder="Jan de Vries"
-                  className="w-full rounded-xl bg-slate-50 border border-slate-200 p-2.5 text-slate-900 focus:outline-none focus:border-orange-600"
+                  className="w-full rounded bg-surface-container-low border border-outline-variant p-2.5 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-body-sm"
                 />
               </div>
 
@@ -122,7 +122,7 @@ export default function CheckoutPage() {
                   value={customer.email}
                   onChange={(e) => setCustomer({ email: e.target.value })}
                   placeholder="jan@example.nl"
-                  className="w-full rounded-xl bg-slate-50 border border-slate-200 p-2.5 text-slate-900 focus:outline-none focus:border-orange-600"
+                  className="w-full rounded bg-surface-container-low border border-outline-variant p-2.5 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-body-sm"
                 />
               </div>
             </div>
@@ -135,7 +135,7 @@ export default function CheckoutPage() {
                   value={customer.phone || ''}
                   onChange={(e) => setCustomer({ phone: e.target.value })}
                   placeholder="+31 6 1234 5678"
-                  className="w-full rounded-xl bg-slate-50 border border-slate-200 p-2.5 text-slate-900 focus:outline-none focus:border-orange-600"
+                  className="w-full rounded bg-surface-container-low border border-outline-variant p-2.5 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-body-sm"
                 />
               </div>
 
@@ -144,7 +144,7 @@ export default function CheckoutPage() {
                 <select
                   value={customer.city}
                   onChange={(e) => setCustomer({ city: e.target.value as any })}
-                  className="w-full rounded-xl bg-slate-50 border border-slate-200 p-2.5 text-slate-900 focus:outline-none focus:border-orange-600 font-medium"
+                  className="w-full rounded bg-surface-container-low border border-outline-variant p-2.5 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-body-sm font-medium"
                 >
                   <option value="Haarlem">Haarlem (Direct 1-day hub)</option>
                   <option value="Amsterdam">Amsterdam (Same-day courier hub)</option>
@@ -164,7 +164,7 @@ export default function CheckoutPage() {
                   value={customer.address}
                   onChange={(e) => setCustomer({ address: e.target.value })}
                   placeholder="Gierstraat 12"
-                  className="w-full rounded-xl bg-slate-50 border border-slate-200 p-2.5 text-slate-900 focus:outline-none focus:border-orange-600"
+                  className="w-full rounded bg-surface-container-low border border-outline-variant p-2.5 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-body-sm"
                 />
               </div>
 
@@ -175,7 +175,7 @@ export default function CheckoutPage() {
                   value={customer.postalCode || ''}
                   onChange={(e) => setCustomer({ postalCode: e.target.value })}
                   placeholder="2011 GA"
-                  className="w-full rounded-xl bg-slate-50 border border-slate-200 p-2.5 text-slate-900 uppercase focus:outline-none focus:border-orange-600"
+                  className="w-full rounded bg-surface-container-low border border-outline-variant p-2.5 text-on-surface uppercase focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary font-label-mono-xs"
                 />
               </div>
             </div>
@@ -195,10 +195,10 @@ export default function CheckoutPage() {
                   <label
                     key={tier.id}
                     onClick={() => setDeliverySpeed(tier.id)}
-                    className={`p-4 rounded-xl border-2 flex items-center justify-between cursor-pointer transition-all ${
+                    className={`p-4 rounded-lg border-2 flex items-center justify-between cursor-pointer transition-all ${
                       isSelected
-                        ? 'bg-orange-50/50 border-orange-600 shadow-xs'
-                        : 'bg-slate-50 border-slate-200 hover:border-slate-300'
+                        ? 'bg-primary/5 border-primary shadow-xs ring-1 ring-primary'
+                        : 'bg-white border-outline-variant hover:border-slate-300'
                     }`}
                   >
                     <div className="flex items-start gap-3">
@@ -207,26 +207,26 @@ export default function CheckoutPage() {
                         name="deliverySpeed"
                         checked={isSelected}
                         onChange={() => setDeliverySpeed(tier.id)}
-                        className="mt-1 text-orange-600 focus:ring-0"
+                        className="mt-1 text-primary focus:ring-0"
                       />
                       <div>
-                        <div className="font-bold text-xs sm:text-sm text-slate-900 flex items-center gap-2">
+                        <div className="font-bold text-xs sm:text-sm text-on-surface flex items-center gap-2">
                           <span>{tier.name}</span>
                           {tier.highlight && (
-                            <span className="text-[10px] font-bold px-2 py-0.2 rounded-full bg-orange-100 text-orange-700 border border-orange-200">
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded font-label-mono-xs bg-primary/10 text-primary border border-primary/20">
                               {tier.highlight}
                             </span>
                           )}
                         </div>
                         <div className="text-[11px] text-slate-500 mt-0.5">{tier.carrier}</div>
-                        <div className="text-[11px] text-emerald-700 font-semibold mt-1 flex items-center gap-1">
-                          <Clock className="w-3 h-3" />
+                        <div className="text-[11px] text-emerald-700 font-semibold mt-1 flex items-center gap-1 font-label-mono-xs">
+                          <Clock className="w-3 h-3 text-emerald-600" />
                           {tier.duration}
                         </div>
                       </div>
                     </div>
 
-                    <div className="font-extrabold text-sm text-slate-900 font-mono">
+                    <div className="font-bold text-sm text-on-surface font-label-mono">
                       {tier.costEur === 0 ? 'FREE' : formatEur(tier.costEur)}
                     </div>
                   </label>
@@ -277,7 +277,7 @@ export default function CheckoutPage() {
 
           <button
             type="submit"
-            className="w-full py-4 px-6 rounded-xl bg-slate-900 hover:bg-orange-600 text-white font-bold text-base shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 group"
+            className="w-full py-3.5 px-6 rounded bg-primary hover:bg-primary-hover active:bg-[#003cb8] text-white font-bold text-base shadow-level-1 hover:shadow-level-2 transition-all flex items-center justify-center gap-2 group cursor-pointer"
           >
             <span>Confirm Order &amp; Pay {formatEur(priceBreakdown.totalPriceEur)}</span>
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -286,47 +286,47 @@ export default function CheckoutPage() {
 
         {/* Right Column: Clean Summary Card */}
         <div className="lg:col-span-5">
-          <div className="rounded-2xl bg-white border border-slate-200 p-6 shadow-card space-y-6 sticky top-24">
-            <div className="pb-4 border-b border-slate-200">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                Order Review
+          <div className="rounded-xl bg-white border border-outline-variant p-6 shadow-level-2 space-y-6 sticky top-24">
+            <div className="pb-4 border-b border-outline-variant">
+              <span className="text-[10px] font-bold uppercase tracking-wider font-label-mono-xs text-slate-500 block">
+                PRODUCTION ORDER REVIEW
               </span>
-              <h3 className="text-lg font-extrabold text-slate-900">
+              <h3 className="text-lg font-bold text-on-surface font-headline-sm">
                 Summary Card
               </h3>
             </div>
 
             {/* Model Details */}
             <div className="space-y-3 text-xs">
-              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
-                <div className="font-bold text-slate-900 flex items-center gap-2 text-sm">
-                  <Box className="w-4 h-4 text-orange-600" />
+              <div className="p-3.5 rounded bg-surface-container-low border border-outline-variant space-y-2">
+                <div className="font-bold text-on-surface flex items-center gap-2 text-sm">
+                  <Box className="w-4 h-4 text-primary" />
                   <span className="truncate">{fileName}</span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-600 pt-1 border-t border-slate-200/80">
                   <div>
-                    <span className="text-slate-400 block">Dimensions:</span>
-                    <strong className="text-slate-900 font-mono">
+                    <span className="text-slate-400 block font-label-mono-xs uppercase">Dimensions:</span>
+                    <strong className="text-on-surface font-label-mono">
                       {priceBreakdown.scaledDimensions.x} &times; {priceBreakdown.scaledDimensions.y} &times; {priceBreakdown.scaledDimensions.z} mm
                     </strong>
                   </div>
 
                   <div>
-                    <span className="text-slate-400 block">Scale Preset:</span>
-                    <strong className="text-slate-900">
-                      {Math.round(scaleFactor * 100)}% (Volume: {priceBreakdown.scaledVolumeCm3} cm&sup3;)
+                    <span className="text-slate-400 block font-label-mono-xs uppercase">Scale:</span>
+                    <strong className="text-on-surface font-label-mono">
+                      {Math.round(scaleFactor * 100)}% ({priceBreakdown.scaledVolumeCm3} cm&sup3;)
                     </strong>
                   </div>
 
                   <div>
-                    <span className="text-slate-400 block">Material:</span>
-                    <strong className="text-slate-900">{mat.simpleName}</strong>
+                    <span className="text-slate-400 block font-label-mono-xs uppercase">Material:</span>
+                    <strong className="text-on-surface">{mat.simpleName}</strong>
                   </div>
 
                   <div>
-                    <span className="text-slate-400 block">Color Option:</span>
-                    <strong className="text-slate-900">
+                    <span className="text-slate-400 block font-label-mono-xs uppercase">Color:</span>
+                    <strong className="text-on-surface">
                       {colorOption === 'MULTI' ? 'Multi-Color (AMS)' : 'Single Color'}
                     </strong>
                   </div>
@@ -334,11 +334,11 @@ export default function CheckoutPage() {
               </div>
 
               {/* Delivery Schedule Callout */}
-              <div className="p-3.5 rounded-xl bg-orange-50 border border-orange-200 flex items-center gap-3">
-                <Clock className="w-4 h-4 text-orange-600 shrink-0" />
+              <div className="p-3.5 rounded bg-primary/5 border border-primary/20 flex items-center gap-3">
+                <Clock className="w-4 h-4 text-primary shrink-0" />
                 <div className="text-[11px]">
-                  <span className="font-bold text-orange-950 block">Estimated Delivery Date:</span>
-                  <span className="text-orange-800 font-medium">
+                  <span className="font-bold text-on-surface block font-label-mono-xs uppercase">Estimated Delivery:</span>
+                  <span className="text-primary font-semibold">
                     {priceBreakdown.estimatedDeliveryDate}
                   </span>
                 </div>

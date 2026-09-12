@@ -74,8 +74,8 @@ export default function OrderConfirmationView() {
 
           <div className="flex items-center justify-between pt-3 border-t border-slate-200">
             <span className="text-slate-500">Target Delivery:</span>
-            <span className="font-bold text-orange-700 flex items-center gap-1">
-              <Clock className="w-3.5 h-3.5" />
+            <span className="font-bold text-primary flex items-center gap-1 font-label-mono-xs">
+              <Clock className="w-3.5 h-3.5 text-primary" />
               Dispatched in 1 Working Day
             </span>
           </div>
