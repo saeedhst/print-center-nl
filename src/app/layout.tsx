@@ -2,17 +2,16 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'PrintLab NL | Fast On-Demand 3D Printing (Haarlem • Amsterdam • Utrecht)',
+  title: 'PrintLab.nl | AMS Industrial 3D Hub (Amsterdam • Randstad)',
   description:
-    'On-demand 3D printing and CAD engineering service. Dispatched in just 1 working day across Haarlem, Amsterdam, and Utrecht. Instant 3D file quotes and 24-hour custom design services.',
+    'No 3D printer? Consider it printed :) From student projects to broken home parts or engineering prototypes, we print and deliver in 24 hours across the Netherlands.',
   keywords: [
-    '3D printing Haarlem',
     '3D printing Amsterdam',
-    '3D printing Utrecht',
     '3D printen Nederland',
     'STL instant quote',
     'CAD design quote',
-    'Rapid prototyping Randstad',
+    'PrintLab NL',
+    'MakerWorld Printables print service',
   ],
 };
 
@@ -23,9 +22,22 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="h-full light antialiased">
-      <body className="min-h-full flex flex-col bg-white text-slate-900 selection:bg-orange-500 selection:text-white">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
+          rel="stylesheet"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="min-h-full flex flex-col bg-surface font-body-md text-on-surface antialiased selection:bg-primary-container selection:text-white">
         {children}
       </body>
     </html>
   );
 }
+

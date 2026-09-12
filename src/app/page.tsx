@@ -4,6 +4,7 @@ import React from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import Hero from '@/components/home/Hero';
+import PricingSection from '@/components/home/PricingSection';
 import HowItWorks from '@/components/home/HowItWorks';
 import BenchmarkPortfolio from '@/components/home/BenchmarkPortfolio';
 import ReviewsSection from '@/components/home/ReviewsSection';
@@ -20,7 +21,7 @@ export default function Home() {
   const { activeView } = useAppStore();
 
   return (
-    <div className="min-h-screen flex flex-col bg-white text-slate-900 bg-light-grid">
+    <div className="min-h-screen flex flex-col bg-surface text-on-surface font-body-md">
       <Navbar />
 
       <main className="flex-1">
@@ -44,10 +45,11 @@ export default function Home() {
           <OrderTable />
         ) : (
           /* Default: 'landing' */
-          <div className="space-y-0">
+          <div className="space-y-0 pt-20">
             <Hero />
-            <HowItWorks />
+            <PricingSection />
             <BenchmarkPortfolio />
+            <HowItWorks />
             <ReviewsSection />
           </div>
         )}

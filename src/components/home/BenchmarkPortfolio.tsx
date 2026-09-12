@@ -1,153 +1,133 @@
 'use client';
 
-import React, { useState } from 'react';
-import { BENCHMARK_PORTFOLIO } from '@/lib/sampleData';
-import { BenchmarkPortfolioItem } from '@/types';
-import { SIMPLE_MATERIALS, formatEur } from '@/lib/pricing';
+import React from 'react';
 import { useAppStore } from '@/lib/store';
 import { PRESET_MODELS, calculateGeometryVolumeCm3, getBoundingBoxDimensions } from '@/lib/meshUtils';
-import { Clock, MapPin, ArrowUpRight, Box, Sparkles, Layers } from 'lucide-react';
+
+interface UseCaseItem {
+  id: string;
+  tag: string;
+  title: string;
+  description: string;
+  image: string;
+  presetIndex: number;
+  material: 'STANDARD' | 'TOUGH' | 'RESIN';
+}
+
+const USE_CASES: UseCaseItem[] = [
+  {
+    id: 'robotics',
+    tag: '01. Robotics',
+    title: 'Functional Parts',
+    description: 'From individual printed components to a complete, working mechanism.',
+    image:
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuAihKnCwYbARye2n2I8BcMid4q_DeYtq5AzHapo6fIEmbX9avBy67UJSmvphDBzq73eR6RNNTz4OHGco5gmmEX1Zi472mCiRrdvB14R7B1_AuKntg830BaTb9r5Bx4VjspjAaFMDsWDtCwVbPcbVLqfbp3ZxcFV7MiRsv95U2EqwuVaElLZjwWOsjnP96iYu6z6qftL4mywEsJ0hzjMHO0YQvJw9lXRk20COTeEqqaL8zSsekAkhZKScA',
+    presetIndex: 0,
+    material: 'TOUGH',
+  },
+  {
+    id: 'architecture',
+    tag: '02. Architecture',
+    title: 'Scale Facades',
+    description: 'High-detail matte white architectural PLA and resin prints depicting intricate geometries.',
+    image:
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuD21mcOyha-qPrjjxAT4YzEvmOEl7hrJoWNnjaJs_5owMWl2J9u8jRLvHeHn5oAYuzdNsa_0YlLM5KwswNLYxKTj0sZrBsQqCMjwjEdbPAKXyS-Pe7zUFnA40XsctCSTQ1WcoY-cUdHmMFviZ17irZxywsIHDmjFxxb4a0JjsnZiS3PEVhn9MApEX8oDmd53eigiMnsoLtrdGrpHGG6q2wOvle2vpTnAiSIuTYXOPnSXiKAChVbh7RXwQ',
+    presetIndex: 1,
+    material: 'RESIN',
+  },
+  {
+    id: 'academic',
+    tag: '03. Academic',
+    title: 'Visual Learning',
+    description: 'Fast, affordable design iterations for industrial design and engineering students.',
+    image:
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuByubltvWwMxDN15Z7_GaoXLlCvaDepGiwpBhWbPgLEtIC_gAMr_HsoyhEhtvLbYYzWYdQ8Ap0mxdcGaGjDr6QjiMd3NTKH5K5PXGlnPEvQjec5g06R8KmEVZsUmZGWb2qqel-F0dxKXeTG8AfRz1_mAMz4wSrfI8goavkUASoMWs15UC6CFWb9P5coBcFHTXdYS8fprlUdcYH_sVGe2CHK-PSPaSBU7Y0uiHUrpMB6_M-KV428QQplcQ',
+    presetIndex: 2,
+    material: 'STANDARD',
+  },
+  {
+    id: 'gadgets',
+    tag: '04. Custom Gadgets',
+    title: 'Everyday Hardware',
+    description: 'Camera accessories, ergonomic enclosures, and custom bracket solutions.',
+    image:
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuAQsM3dP2FGdJ-Hsds7dOaATTCvgffmXITGEBIfab-hoDnTnC8tWkdEAPdMEFV7LnupI9Sul7RGnA9gyobVQwnbHHrC7g9CnWIS07FbyRBkIzlLiTk2BUjIGNctQE6CYBrDDHGcsAkXIgNSy1jEzMonuFRUvSVqI0UT2_9MIU2mtUvP6h6Wej2uxNYjXoC5fykuMSui3k8GkbWgywAYVumYZ3aFmNv1TtLZznh0DEBkvvILM_EwkDLNog',
+    presetIndex: 3,
+    material: 'TOUGH',
+  },
+];
 
 export default function BenchmarkPortfolio() {
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const { setModelGeometry, setMaterial, setActiveView, setOrderType } = useAppStore();
 
-  const categories = ['All', 'Functional Parts', 'Prototypes', 'Aesthetic / Multi-Color'];
-
-  const filteredItems = selectedCategory === 'All'
-    ? BENCHMARK_PORTFOLIO
-    : BENCHMARK_PORTFOLIO.filter((item) => item.category.toLowerCase().includes(selectedCategory.toLowerCase().split(' ')[0]));
-
-  const handleLoadItem = (item: BenchmarkPortfolioItem) => {
-    let preset = PRESET_MODELS[0];
-    if (item.category.includes('Architecture') || item.category.includes('Facade')) {
-      preset = PRESET_MODELS[1];
-    } else if (item.category.includes('Drone') || item.category.includes('Aesthetic')) {
-      preset = PRESET_MODELS[2];
-    } else if (item.category.includes('Dial') || item.category.includes('Knob')) {
-      preset = PRESET_MODELS[3];
-    }
-
+  const handleSelectCase = (item: UseCaseItem) => {
+    const preset = PRESET_MODELS[item.presetIndex] || PRESET_MODELS[0];
     const geom = preset.generateGeometry();
     const dims = getBoundingBoxDimensions(geom);
     const volume = calculateGeometryVolumeCm3(geom);
 
     setModelGeometry(preset.fileName, geom, dims, volume, preset.id);
-    setMaterial(item.material === 'RESIN' ? 'RESIN' : item.material === 'TOUGH' ? 'TOUGH' : 'STANDARD');
+    setMaterial(item.material);
     setOrderType('DIRECT_PRINT');
     setActiveView('order-a');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
-    <section id="portfolio-section" className="py-16 bg-slate-50 border-t border-slate-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
-          <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-700 bg-white border border-slate-200 px-3 py-1 rounded-full">
-              Real Sample Gallery
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-2">
-              Printed Samples &amp; Benchmarks
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-xl">
-              Clean sample cards showing real-world printed items across Haarlem, Amsterdam, and Utrecht with exact dimensions and pricing.
-            </p>
-          </div>
-
-          {/* Category Filter Pills */}
-          <div className="flex flex-wrap gap-1.5 p-1 bg-white rounded-xl border border-slate-200 self-start md:self-auto">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
-                  selectedCategory === cat
-                    ? 'bg-slate-900 text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
+    <section id="use-cases-section" className="w-full py-20 lg:py-24 bg-surface border-b border-outline-variant/30">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        {/* Section Header */}
+        <div className="max-w-2xl mb-14 space-y-2">
+          <span className="font-label-mono text-label-mono uppercase text-secondary font-bold tracking-wider">
+            USE CASES
+          </span>
+          <h2 className="font-headline-lg text-headline-lg text-on-surface tracking-tight">
+            Bring Any Idea to Life
+          </h2>
+          <p className="font-body-md text-body-md text-on-surface-variant">
+            High-precision 3D printing for engineers, architects, students, and makers.
+          </p>
         </div>
 
-        {/* Gallery Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredItems.map((item) => {
-            const mat = SIMPLE_MATERIALS[item.material] || SIMPLE_MATERIALS.STANDARD;
-            return (
-              <div
-                key={item.id}
-                className="rounded-2xl bg-white border border-slate-200 hover:border-slate-300 shadow-soft hover:shadow-card transition-all overflow-hidden flex flex-col justify-between group"
-              >
-                {/* Visual Header */}
-                <div className="p-5 bg-gradient-to-br from-slate-100 via-slate-50 to-white border-b border-slate-200 flex flex-col justify-between min-h-[140px]">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-semibold text-slate-600 px-2.5 py-0.5 rounded-full bg-white border border-slate-200 flex items-center gap-1.5">
-                      <MapPin className="w-3 h-3 text-orange-600" />
-                      {item.city} &bull; {item.clientType}
-                    </span>
+        {/* 4 Use Case Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {USE_CASES.map((item) => (
+            <div
+              key={item.id}
+              onClick={() => handleSelectCase(item)}
+              className="flex flex-col bg-surface-container-lowest rounded-xl overflow-hidden border border-outline-variant/40 hover:border-primary/60 transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer group"
+            >
+              <div className="h-44 overflow-hidden bg-surface-container relative">
+                <img
+                  alt={item.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  src={item.image}
+                  onError={(e) => {
+                    // Fallback to crisp generic tech image if link is inaccessible
+                    e.currentTarget.src =
+                      'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80';
+                  }}
+                />
+              </div>
 
-                    <span className="text-xs font-bold text-slate-900 font-mono">
-                      {formatEur(item.priceEur)}
-                    </span>
+              <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
+                <div>
+                  <div className="font-label-mono-xs text-label-mono-xs text-on-surface-variant uppercase tracking-wider mb-1">
+                    {item.tag}
                   </div>
-
-                  <div className="mt-4">
-                    <span className="text-[10px] font-bold text-orange-600 uppercase tracking-wide block">
-                      {item.category}
-                    </span>
-                    <h3 className="text-base font-bold text-slate-900 line-clamp-1 group-hover:text-orange-600 transition-colors">
-                      {item.title}
-                    </h3>
-                  </div>
-                </div>
-
-                {/* Body & Specs */}
-                <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-                  <p className="text-xs text-slate-600 leading-relaxed">
+                  <h3 className="font-headline-sm text-headline-sm text-on-surface font-semibold group-hover:text-primary transition-colors">
+                    {item.title}
+                  </h3>
+                  <p className="font-body-sm text-body-sm text-on-surface-variant mt-1">
                     {item.description}
                   </p>
-
-                  <div className="grid grid-cols-3 gap-2 py-3 border-y border-slate-100 text-xs">
-                    <div>
-                      <span className="text-[10px] text-slate-400 font-semibold block">MATERIAL</span>
-                      <span className="font-bold text-slate-800 text-xs mt-0.5 block truncate">
-                        {mat.simpleName}
-                      </span>
-                    </div>
-
-                    <div>
-                      <span className="text-[10px] text-slate-400 font-semibold block">SIZE</span>
-                      <span className="font-bold text-slate-800 text-xs mt-0.5 block font-mono">
-                        {item.dimensions.x}&times;{item.dimensions.y}&times;{item.dimensions.z}mm
-                      </span>
-                    </div>
-
-                    <div>
-                      <span className="text-[10px] text-slate-400 font-semibold block">PRINT TIME</span>
-                      <span className="font-bold text-slate-800 text-xs mt-0.5 flex items-center gap-1">
-                        <Clock className="w-3 h-3 text-slate-400" />
-                        {item.printDurationHours}h
-                      </span>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => handleLoadItem(item)}
-                    className="w-full py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-900 text-slate-800 hover:text-white text-xs font-bold transition-all flex items-center justify-center gap-2 group/btn"
-                  >
-                    <span>Load Spec into 3D Viewer</span>
-                    <ArrowUpRight className="w-4 h-4 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
-                  </button>
                 </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       </div>
     </section>
   );
 }
+

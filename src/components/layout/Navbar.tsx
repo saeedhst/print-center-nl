@@ -1,104 +1,137 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useAppStore } from '@/lib/store';
-import { Box, User, LogOut, ShieldCheck, Inbox, ArrowRight } from 'lucide-react';
+import { Box, User, LogOut, Inbox } from 'lucide-react';
 
 export default function Navbar() {
-  const { activeView, setActiveView, currentUser, logout, orders } = useAppStore();
+  const { activeView, setActiveView, currentUser, logout, orders, setOrderType } = useAppStore();
+  const [lang, setLang] = useState<'NL' | 'EN'>('NL');
 
   const pendingCount = orders.filter(
     (o) => o.status === 'QUOTE_SUBMITTED' || o.status === 'IN_PRODUCTION'
   ).length;
 
+  const handleStartPrint = () => {
+    setOrderType('DIRECT_PRINT');
+    setActiveView('order-a');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
-    <header className="sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b border-slate-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Brand Logo */}
+    <header className="fixed top-0 left-0 w-full z-50 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] border-b border-outline-variant/30">
+      <div className="h-20 max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between gap-6">
+        {/* Brand */}
+        <div className="flex items-center gap-8">
           <button
             onClick={() => setActiveView('landing')}
-            className="flex items-center gap-3 text-left group transition-transform active:scale-98"
+            className="flex items-center gap-3 text-left focus:outline-none group"
           >
-            <div className="w-9 h-9 rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-sm group-hover:bg-orange-600 transition-colors">
-              <Box className="w-5 h-5 stroke-[2.2]" />
-            </div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-extrabold text-lg text-slate-900 tracking-tight">PrintLab</span>
-                <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-orange-100 text-orange-700 border border-orange-200">
-                  NL
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-500 font-medium">Haarlem &bull; Amsterdam &bull; Utrecht</p>
+            <div className="flex flex-col">
+              <span className="font-headline-sm text-headline-sm font-bold tracking-tight text-on-surface leading-none">
+                PrintLab<span className="text-primary-container">.nl</span>
+              </span>
+              <span className="font-label-mono-xs text-label-mono-xs text-on-surface-variant uppercase tracking-wider mt-1">
+                AMS Industrial 3D Hub
+              </span>
             </div>
           </button>
+        </div>
 
-          {/* Right Header Navigation & Actions */}
-          <div className="flex items-center gap-3">
-            {/* Order Queue - ONLY SHOWN WHEN ADMIN IS LOGGED IN */}
-            {currentUser?.role === 'admin' && (
-              <button
-                onClick={() => setActiveView('admin')}
-                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 border ${
-                  activeView === 'admin'
-                    ? 'bg-orange-50 text-orange-700 border-orange-200 shadow-xs'
-                    : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-200'
-                }`}
-              >
-                <Inbox className="w-3.5 h-3.5 text-orange-600" />
-                <span>Orders Queue</span>
-                {pendingCount > 0 && (
-                  <span className="px-1.5 py-0.2 rounded-full bg-orange-600 text-white text-[10px] font-bold">
-                    {pendingCount}
-                  </span>
-                )}
-              </button>
-            )}
+        {/* Right Nav */}
+        <div className="flex items-center gap-3 sm:gap-4">
+          {/* Order Queue - ONLY SHOWN WHEN ADMIN IS LOGGED IN */}
+          {currentUser?.role === 'admin' && (
+            <button
+              onClick={() => setActiveView('admin')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 border ${
+                activeView === 'admin'
+                  ? 'bg-primary-fixed text-primary border-primary/40'
+                  : 'bg-surface-container hover:bg-surface-container-high text-on-surface border-outline-variant/40'
+              }`}
+            >
+              <Inbox className="w-3.5 h-3.5 text-primary" />
+              <span className="hidden sm:inline">Orders Queue</span>
+              {pendingCount > 0 && (
+                <span className="px-1.5 py-0.2 rounded-full bg-primary text-white text-[10px] font-bold">
+                  {pendingCount}
+                </span>
+              )}
+            </button>
+          )}
 
-            {/* User Session or Login/Sign up Button */}
-            {currentUser ? (
-              <div className="flex items-center gap-2">
-                <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs">
-                  <div className="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-[10px]">
-                    {currentUser.role === 'admin' ? 'A' : 'U'}
-                  </div>
-                  <div className="text-left leading-tight">
-                    <span className="font-bold text-slate-900 block truncate max-w-[120px]">
-                      {currentUser.name}
-                    </span>
-                    <span className="text-[10px] text-orange-600 font-semibold uppercase tracking-wider">
-                      {currentUser.role === 'admin' ? 'Staff Admin' : 'Customer'}
-                    </span>
-                  </div>
-                </div>
+          {/* Language Switcher */}
+          <div className="flex items-center bg-surface-container px-2 py-1 rounded-lg text-on-surface font-label-mono text-label-mono-xs">
+            <button
+              onClick={() => setLang('NL')}
+              className={`px-1 transition-colors ${
+                lang === 'NL'
+                  ? 'font-bold text-primary'
+                  : 'text-on-surface-variant hover:text-on-surface'
+              }`}
+              type="button"
+            >
+              NL
+            </button>
+            <span className="text-outline-variant">/</span>
+            <button
+              onClick={() => setLang('EN')}
+              className={`px-1 transition-colors ${
+                lang === 'EN'
+                  ? 'font-bold text-primary'
+                  : 'text-on-surface-variant hover:text-on-surface'
+              }`}
+              type="button"
+            >
+              EN
+            </button>
+          </div>
 
-                <button
-                  onClick={logout}
-                  title="Log out"
-                  className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-red-50 hover:text-red-700 text-slate-600 text-xs font-bold border border-slate-200 transition-colors flex items-center gap-1.5"
-                >
-                  <LogOut className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">Log out</span>
-                </button>
-              </div>
-            ) : (
-              /* Instead of Start your Order make it Login / Sign up */
+          {/* Primary CTA: Start 3D Print */}
+          <button
+            onClick={handleStartPrint}
+            className="inline-flex items-center justify-center bg-primary-container text-on-primary font-label-lg text-label-lg px-4 py-2.5 rounded hover:bg-primary transition-colors shadow-sm cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[18px] mr-1.5">view_in_ar</span>
+            <span>Start 3D Print</span>
+          </button>
+
+          {/* Profile / Auth Avatar */}
+          {currentUser ? (
+            <div className="flex items-center gap-2 pl-1">
               <button
                 onClick={() => setActiveView('auth')}
-                className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all shadow-xs flex items-center gap-2 ${
-                  activeView === 'auth'
-                    ? 'bg-orange-600 text-white'
-                    : 'bg-slate-900 hover:bg-orange-600 text-white'
-                }`}
+                title={`${currentUser.name} (${currentUser.role})`}
+                className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs ring-1 ring-outline-variant cursor-pointer"
               >
-                <User className="w-4 h-4" />
-                <span>Log in / Sign up</span>
+                {currentUser.name.charAt(0).toUpperCase()}
               </button>
-            )}
-          </div>
+              <button
+                onClick={logout}
+                title="Log out"
+                className="p-1.5 text-on-surface-variant hover:text-error transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center pl-1">
+              <button
+                onClick={() => setActiveView('auth')}
+                className="w-8 h-8 rounded-full overflow-hidden ring-1 ring-outline-variant hover:ring-primary transition-all cursor-pointer flex items-center justify-center bg-surface-container"
+                title="Log in / Sign up"
+              >
+                <img
+                  alt="Profile"
+                  className="w-full h-full object-cover"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzcWqRmi8GjbcgJp1ax-xBdHaZb3SuQKjJRLYTbbwPp0lT95h4r67jL6nNT1Zr4Uel219YQ5ZhoTBlhTqCK-9GLB8FW5ip0cmoL1eX-wsmYpSBjrFoqRaiVCbi3O98ZjFRIeGgHQw2bbprDSvvLPTNvdEKqEvQ0ANnfZ4F3tWES0Ih1XIqxAF-XQ3xVF9XGt37jer5JoUkwuUp5CuvQSl07Z1DyC_SV59uEug7kYR-gVIrv9ftxOC6cg"
+                />
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>
   );
 }
+

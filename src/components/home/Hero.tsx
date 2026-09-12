@@ -2,112 +2,103 @@
 
 import React from 'react';
 import { useAppStore } from '@/lib/store';
-import { ArrowRight, Clock, ShieldCheck, Tag, Sparkles, CheckCircle2, Box, Truck } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 export default function Hero() {
-  const { setActiveView } = useAppStore();
+  const { setActiveView, setOrderType } = useAppStore();
 
-  const handleStartOrder = () => {
-    setActiveView('branch');
+  const handleStart3DFile = () => {
+    setOrderType('DIRECT_PRINT');
+    setActiveView('order-a');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleRequestDesign = () => {
+    setOrderType('DESIGN_AND_PRINT');
+    setActiveView('order-b');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
-    <section className="relative overflow-hidden pt-12 pb-20 sm:pt-16 sm:pb-28 bg-white">
-      {/* Subtle clean background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-50/70 via-white to-white pointer-events-none" />
-
-      <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        {/* Local Randstad Hubs Card */}
-        <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200 shadow-soft max-w-2xl mx-auto mb-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-left">
-          <div className="flex items-center gap-3.5">
-            <div className="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center shrink-0">
-              <Truck className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="flex h-2 w-2 relative">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-500 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
-                </span>
-                <span className="font-extrabold text-sm text-slate-900">
-                  Local Randstad Hubs
-                </span>
-              </div>
-              <p className="text-xs text-slate-600 mt-0.5">
-                Dispatched in just <strong>1 working day</strong> across Haarlem, Amsterdam &amp; Utrecht.
+    <section className="relative w-full overflow-hidden bg-surface py-16 lg:py-24 border-b border-outline-variant/30">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+          {/* Left Column: Headlines & Dual Cards */}
+          <div className="lg:col-span-7 flex flex-col space-y-8">
+            <div className="space-y-4">
+              <h1 className="font-display text-display text-on-surface tracking-tight leading-[1.06]">
+                No 3D printer?
+                <br />
+                <span style={{ letterSpacing: '-0.025em' }}>Consider it printed :)</span>
+                <br />
+              </h1>
+              <p className="font-body-lg text-body-lg text-on-surface-variant max-w-xl">
+                From a student project to a broken home part or an engineering prototype
+                <br />
+                we print and deliver it in 24 hours !
               </p>
             </div>
-          </div>
 
-          <div className="w-full sm:w-auto text-[11px] font-medium text-slate-500 border-t sm:border-t-0 sm:border-l border-slate-200 pt-2 sm:pt-0 sm:pl-4 text-center sm:text-left shrink-0">
-            Fast turnaround &bull; Industrial quality &bull; Transparent pricing
-          </div>
-        </div>
+            {/* Dual Action Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Card 1: Direct 3D File */}
+              <button
+                onClick={handleStart3DFile}
+                className="group p-6 bg-surface-container-lowest rounded-xl border border-outline-variant/40 hover:border-primary transition-all duration-300 shadow-sm hover:shadow-md flex flex-col justify-between space-y-4 text-left cursor-pointer"
+              >
+                <div className="space-y-2">
+                  <h3 className="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors font-bold">
+                    I Have a 3D File
+                  </h3>
+                  <p className="font-body-sm text-body-sm text-on-surface-variant">
+                    Drop your 3D file to see an instant 3D preview and price.
+                  </p>
+                </div>
+                <div className="flex items-center text-primary font-label-lg text-label-lg font-semibold gap-1 group-hover:translate-x-1 transition-transform">
+                  <span>Start</span>
+                  <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                </div>
+              </button>
 
-        {/* Required Headline */}
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.12] max-w-4xl mx-auto">
-          Fast, on-demand 3D printing delivered across{' '}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 via-amber-600 to-orange-700">
-            Haarlem, Amsterdam &amp; Utrecht.
-          </span>
-        </h1>
-
-        {/* Subtitle */}
-        <p className="mt-6 text-base sm:text-lg text-slate-600 max-w-2xl mx-auto font-normal leading-relaxed">
-          Upload your 3D file for an instant automated price quote, or send a photo or sketch for custom engineering. Manufactured on industrial multi-material printers and delivered to your doorstep.
-        </p>
-
-        {/* Primary Action Button */}
-        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <button
-            onClick={handleStartOrder}
-            className="w-full sm:w-auto px-8 py-4 rounded-xl bg-slate-900 hover:bg-orange-600 text-white font-bold text-base shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-3 group"
-          >
-            <span>Start Your 3D Print Order</span>
-            <ArrowRight className="w-5 h-5 text-white/80 group-hover:translate-x-1 transition-transform" />
-          </button>
-        </div>
-
-        {/* 3 Core Highlights (Required) */}
-        <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-5 text-left max-w-4xl mx-auto">
-          <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/90 shadow-soft">
-            <div className="w-10 h-10 rounded-xl bg-orange-100 text-orange-700 flex items-center justify-center mb-3">
-              <Clock className="w-5 h-5" />
+              {/* Card 2: Custom Design / Photo */}
+              <button
+                onClick={handleRequestDesign}
+                className="group p-6 bg-surface-container-lowest rounded-xl border border-outline-variant/40 hover:border-secondary transition-all duration-300 shadow-sm hover:shadow-md flex flex-col justify-between space-y-4 text-left cursor-pointer"
+              >
+                <div className="space-y-2">
+                  <h3 className="font-headline-sm text-headline-sm text-on-surface group-hover:text-secondary transition-colors font-bold">
+                    I Have an Idea or Photo
+                  </h3>
+                  <p className="font-body-sm text-body-sm text-on-surface-variant">
+                    Send sketches, broken components, or concept drawings.
+                  </p>
+                </div>
+                <div className="flex items-center text-secondary font-label-lg text-label-lg font-semibold gap-1 group-hover:translate-x-1 transition-transform">
+                  <span>Request 3D Design</span>
+                  <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+                </div>
+              </button>
             </div>
-            <h3 className="text-sm font-bold text-slate-900 mb-1">
-              Dispatched in 1 Working Day
-            </h3>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              Processed immediately in our Randstad production fleet for rapid same-day or next-day turnaround.
-            </p>
           </div>
 
-          <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/90 shadow-soft">
-            <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center mb-3">
-              <ShieldCheck className="w-5 h-5" />
+          {/* Right Column: Precision Components Visual Card */}
+          <div className="lg:col-span-5">
+            <div className="relative rounded-xl overflow-hidden shadow-lg border border-outline-variant/40 bg-surface-container-high">
+              <img
+                alt="3D printed precision components on workbench"
+                className="w-full h-[480px] object-cover"
+                src="https://lh3.googleusercontent.com/aida/AEtjO1Wy5Qq7iFivgbT62_Y_kQD4qwB6rMrMlMT6IQ1fN4ecyzhu1dmKXm4JcLRPLA8Kx2ylxOKSG6C2QG_enaDHewfxJ1uzOFuRiFTdo7MEufDb6KXfnKsYNkjvna9_Ulg-OP7VbAc-u18yRIXZapVCFEDUWIBmf-7FoPc0cQx7y7deWLptb3yCBXmu2IW5fzeL41ZG6BLxa35xf09_QAclej7yHD_J2CCBCTNDito6vMQeAKNS68sWaBDWUZoh"
+                onError={(e) => {
+                  // Fallback to high-contrast technical placeholder if image fails to load
+                  e.currentTarget.src =
+                    'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80';
+                }}
+              />
             </div>
-            <h3 className="text-sm font-bold text-slate-900 mb-1">
-              Industrial-Grade Quality
-            </h3>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              Calibrated Bambu Lab AMS and SLA stereolithography printers with tight mechanical tolerances (&plusmn;0.05mm).
-            </p>
-          </div>
-
-          <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/90 shadow-soft">
-            <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center mb-3">
-              <Tag className="w-5 h-5" />
-            </div>
-            <h3 className="text-sm font-bold text-slate-900 mb-1">
-              Instant Transparent Pricing
-            </h3>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              Live volume calculation in your browser with zero hidden fees. Know exactly what you pay before checkout.
-            </p>
           </div>
         </div>
       </div>
     </section>
   );
 }
+
