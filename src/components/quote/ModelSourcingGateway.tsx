@@ -5,7 +5,6 @@ import Link from 'next/link';
 import {
   Link as LinkIcon,
   Search,
-  Layers,
   ArrowRight,
   Sparkles,
   FileCode,
@@ -13,7 +12,7 @@ import {
 
 export default function ModelSourcingGateway() {
   return (
-    <div className="py-12 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+    <div className="py-12 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
       {/* Top Header */}
       <div>
         <Link
@@ -36,12 +35,12 @@ export default function ModelSourcingGateway() {
         </div>
       </div>
 
-      {/* 3 Main Sourcing Pathways Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* 2 Main Sourcing Pathways Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Pathway 1: Paste a Link */}
         <Link
           href="/import-link"
-          className="group p-6 sm:p-7 rounded-2xl bg-white border border-outline-variant hover:border-primary hover:shadow-level-2 transition-all flex flex-col justify-between cursor-pointer relative overflow-hidden"
+          className="group p-6 sm:p-8 rounded-2xl bg-white border border-outline-variant hover:border-primary hover:shadow-level-2 transition-all flex flex-col justify-between cursor-pointer relative overflow-hidden"
         >
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -84,7 +83,7 @@ export default function ModelSourcingGateway() {
         {/* Pathway 2: Search & Browse Thingiverse */}
         <Link
           href="/thingiverse"
-          className="group p-6 sm:p-7 rounded-2xl bg-white border border-outline-variant hover:border-primary hover:shadow-level-2 transition-all flex flex-col justify-between cursor-pointer relative overflow-hidden"
+          className="group p-6 sm:p-8 rounded-2xl bg-white border border-outline-variant hover:border-primary hover:shadow-level-2 transition-all flex flex-col justify-between cursor-pointer relative overflow-hidden"
         >
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -98,7 +97,7 @@ export default function ModelSourcingGateway() {
 
             <div>
               <h2 className="text-xl font-bold text-on-surface group-hover:text-primary transition-colors font-display">
-                Browse Thingiverse
+                Browse Thingiverse Gallery
               </h2>
               <p className="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">
                 Explore trending open-source models directly on our site. Search phone stands, mounts, desk utilities, and toys with 1-click slicing.
@@ -120,49 +119,6 @@ export default function ModelSourcingGateway() {
 
           <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-primary group-hover:translate-x-1 transition-transform">
             <span>Explore Thingiverse Models &rarr;</span>
-            <ArrowRight className="w-4 h-4" />
-          </div>
-        </Link>
-
-        {/* Pathway 3: Pre-Approved Popular Catalog */}
-        <Link
-          href="/catalog"
-          className="group p-6 sm:p-7 rounded-2xl bg-white border border-outline-variant hover:border-primary hover:shadow-level-2 transition-all flex flex-col justify-between cursor-pointer relative overflow-hidden"
-        >
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center border border-emerald-100 group-hover:scale-105 transition-transform">
-                <Layers className="w-6 h-6" />
-              </div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded font-label-mono-xs">
-                Pre-Tested
-              </span>
-            </div>
-
-            <div>
-              <h2 className="text-xl font-bold text-on-surface group-hover:text-primary transition-colors font-display">
-                Pre-Approved Catalog
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">
-                Curated everyday utility prints ready for commercial production. Tested geometries, fixed pricing, and 1-day delivery in the Netherlands.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-1.5 pt-2">
-              <span className="text-[10px] font-semibold text-slate-700 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded font-label-mono-xs">
-                Office &amp; Desk
-              </span>
-              <span className="text-[10px] font-semibold text-slate-700 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded font-label-mono-xs">
-                Workshop Tools
-              </span>
-              <span className="text-[10px] font-semibold text-slate-700 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded font-label-mono-xs">
-                Instant Price
-              </span>
-            </div>
-          </div>
-
-          <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-primary group-hover:translate-x-1 transition-transform">
-            <span>Browse Utility Catalog &rarr;</span>
             <ArrowRight className="w-4 h-4" />
           </div>
         </Link>

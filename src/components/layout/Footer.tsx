@@ -45,12 +45,6 @@ export default function Footer() {
           >
             Thingiverse
           </Link>
-          <Link
-            href="/catalog"
-            className="hover:text-on-surface transition-colors cursor-pointer"
-          >
-            Catalog
-          </Link>
           <button
             onClick={() => alert('Privacy Policy: All uploaded CAD files are strictly confidential and automatically purged after production.')}
             className="hover:text-on-surface transition-colors cursor-pointer"

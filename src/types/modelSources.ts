@@ -2,7 +2,6 @@ export type ModelSourceProvider =
   | 'makerworld'
   | 'printables'
   | 'thingiverse'
-  | 'catalog'
   | 'upload';
 
 export interface ModelMetadata {
@@ -56,19 +55,4 @@ export interface ThingiverseItem {
   fileUrl?: string;
   defaultDimensions?: { x: number; y: number; z: number };
   presetId?: string;
-}
-
-export interface CatalogItem {
-  id: string;
-  name: string;
-  category: 'Office & Desk' | 'Tools & Workshop' | 'Home & Living' | 'Tech & Gadgets';
-  description: string;
-  thumbnailUrl: string;
-  dimensions: { x: number; y: number; z: number };
-  volumeCm3: number;
-  basePriceEur: number;
-  printTimeHours: number;
-  recommendedMaterial: 'PLA' | 'PETG' | 'ASA';
-  tag: string;
-  presetId: string;
 }
