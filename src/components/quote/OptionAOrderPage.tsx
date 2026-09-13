@@ -11,7 +11,7 @@ import { useAppStore } from '@/lib/store';
 import { PenTool, ArrowLeft } from 'lucide-react';
 
 export default function OptionAOrderPage() {
-  const { setOrderType } = useAppStore();
+  const { setOrderType, sourcedModelMetadata } = useAppStore();
   const router = useRouter();
 
   return (
@@ -51,6 +51,52 @@ export default function OptionAOrderPage() {
           <span>Need a design/CAD instead? (Track 02)</span>
         </button>
       </div>
+
+      {/* Sourced Model Origin Notice Banner */}
+      {sourcedModelMetadata && (
+        <div className="p-4 rounded-xl bg-blue-50/70 border border-blue-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs animate-in fade-in duration-200">
+          <div className="flex items-center gap-3">
+            {sourcedModelMetadata.thumbnailUrl && (
+              <img
+                src={sourcedModelMetadata.thumbnailUrl}
+                alt={sourcedModelMetadata.title}
+                className="w-12 h-12 rounded-lg object-cover border border-blue-200 shrink-0"
+              />
+            )}
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-blue-600 text-white font-label-mono-xs">
+                  Sourced from {sourcedModelMetadata.provider}
+                </span>
+                {sourcedModelMetadata.isNonCommercial ? (
+                  <span className="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded border border-amber-300 font-label-mono-xs">
+                    Non-Commercial (Personal Use)
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded border border-emerald-300 font-label-mono-xs">
+                    Commercial Permitted
+                  </span>
+                )}
+              </div>
+              <div className="font-bold text-slate-900 text-sm">
+                {sourcedModelMetadata.title}
+              </div>
+              {sourcedModelMetadata.author && (
+                <div className="text-slate-500 text-[11px]">
+                  Original Creator: <span className="font-medium text-slate-700">{sourcedModelMetadata.author}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <button
+            onClick={() => router.push('/have-idea-or-photo')}
+            className="text-xs font-bold text-blue-700 hover:text-blue-900 underline cursor-pointer self-start sm:self-auto shrink-0"
+          >
+            Change / Source Another &rarr;
+          </button>
+        </div>
+      )}
 
       {/* 65% / 35% Dual-Pane Workbench Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">

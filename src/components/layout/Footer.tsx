@@ -26,7 +26,7 @@ export default function Footer() {
           </p>
         </div>
 
-        <div className="flex items-center gap-6 font-label-mono text-label-mono-xs">
+        <div className="flex flex-wrap items-center gap-4 sm:gap-6 font-label-mono text-label-mono-xs">
           <button
             onClick={handleOpenSlicer}
             className="hover:text-on-surface transition-colors cursor-pointer"
@@ -34,16 +34,28 @@ export default function Footer() {
             3D Slicer
           </button>
           <Link
-            href="/have-idea-or-photo"
+            href="/import-link"
+            className="hover:text-on-surface transition-colors cursor-pointer"
+          >
+            Import Link
+          </Link>
+          <Link
+            href="/thingiverse"
+            className="hover:text-on-surface transition-colors cursor-pointer"
+          >
+            Thingiverse
+          </Link>
+          <Link
+            href="/catalog"
+            className="hover:text-on-surface transition-colors cursor-pointer"
+          >
+            Catalog
+          </Link>
+          <Link
+            href="/custom-design"
             className="hover:text-on-surface transition-colors cursor-pointer"
           >
             CAD Design
-          </Link>
-          <Link
-            href="/order"
-            className="hover:text-on-surface transition-colors cursor-pointer"
-          >
-            Track Options
           </Link>
           <button
             onClick={() => alert('Privacy Policy: All uploaded CAD files are strictly confidential and automatically purged after production.')}

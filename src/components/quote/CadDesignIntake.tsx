@@ -74,10 +74,10 @@ export default function CadDesignIntake() {
       {/* Top Header & Breadcrumb */}
       <div>
         <Link
-          href="/order"
+          href="/have-idea-or-photo"
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-on-surface transition-colors mb-4 cursor-pointer font-label-mono-xs uppercase tracking-wider"
         >
-          &larr; Switch Workflow Option
+          &larr; Back to Sourcing Options
         </Link>
         <div className="text-center max-w-2xl mx-auto space-y-2">
           <span className="text-xs font-bold uppercase tracking-wider text-primary bg-primary/10 border border-primary/20 px-3 py-1 rounded-full inline-flex items-center gap-1.5 font-label-mono">

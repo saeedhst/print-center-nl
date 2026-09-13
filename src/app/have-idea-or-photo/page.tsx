@@ -1,11 +1,11 @@
 import React from 'react';
-import CadDesignIntake from '@/components/quote/CadDesignIntake';
+import ModelSourcingGateway from '@/components/quote/ModelSourcingGateway';
 
 export const metadata = {
-  title: 'I Have an Idea or Photo | Custom CAD Design Intake | PrintLab.nl',
-  description: 'Upload sketches, photos of broken parts, or links. Our industrial CAD engineers in Haarlem, Amsterdam & Utrecht will design the 3D model with a guaranteed 24h quote.',
+  title: 'Source or Design a 3D Model | PrintLab.nl Amsterdam',
+  description: 'Choose how to source or design your 3D print: paste a link from MakerWorld, Printables, or Thingiverse, browse our curated catalog, or request custom CAD design engineering.',
 };
 
 export default function HaveIdeaOrPhotoPage() {
-  return <CadDesignIntake />;
+  return <ModelSourcingGateway />;
 }

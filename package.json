@@ -13,6 +13,7 @@
     "@types/canvas-confetti": "^1.9.0",
     "@types/three": "^0.185.4",
     "canvas-confetti": "^1.9.4",
+    "cheerio": "^1.2.0",
     "clsx": "^2.1.1",
     "lucide-react": "^1.43.0",
     "next": "16.3.4",

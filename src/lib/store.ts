@@ -61,6 +61,10 @@ interface AppState {
   specialInstructions: string;
   priceBreakdown: PriceBreakdownResult;
 
+  // Sourced Model Metadata (from Link, Thingiverse, Catalog)
+  sourcedModelMetadata: import('@/types/modelSources').ModelMetadata | null;
+  setSourcedModelMetadata: (metadata: import('@/types/modelSources').ModelMetadata | null) => void;
+
   // Option A Actions
   setModelGeometry: (
     fileName: string,
@@ -158,6 +162,9 @@ export const useAppStore = create<AppState>((set, get) => ({
   deliverySpeed: 'COURIER_RANDSTAD',
   specialInstructions: '',
   priceBreakdown: initialBreakdown,
+
+  sourcedModelMetadata: null,
+  setSourcedModelMetadata: (metadata) => set({ sourcedModelMetadata: metadata }),
 
   setModelGeometry: (fileName, geometry, dimensions, volumeCm3, presetId = null) => {
     set((state) => {
