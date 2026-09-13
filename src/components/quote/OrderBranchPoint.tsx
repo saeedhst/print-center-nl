@@ -12,12 +12,12 @@ export default function OrderBranchPoint() {
 
   const handleSelectOptionA = () => {
     setOrderType('DIRECT_PRINT');
-    router.push('/order-a');
+    router.push('/have-3d-file');
   };
 
   const handleSelectOptionB = () => {
     setOrderType('DESIGN_AND_PRINT');
-    router.push('/order-b');
+    router.push('/have-idea-or-photo');
   };
 
   return (

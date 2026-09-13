@@ -72,7 +72,7 @@ export default function CheckoutPage() {
       {/* Back Button */}
       <div>
         <Link
-          href="/order-a"
+          href="/have-3d-file"
           className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600 hover:text-on-surface transition-colors cursor-pointer font-label-mono-xs uppercase tracking-wider"
         >
           <ArrowLeft className="w-4 h-4" />

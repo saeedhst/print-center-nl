@@ -20,6 +20,8 @@ export type AppView =
   | 'branch'
   | 'order-a'
   | 'order-b'
+  | 'have-3d-file'
+  | 'have-idea-or-photo'
   | 'checkout'
   | 'confirmation'
   | 'portfolio'

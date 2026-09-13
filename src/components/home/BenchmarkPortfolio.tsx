@@ -72,7 +72,7 @@ export default function BenchmarkPortfolio() {
     setModelGeometry(preset.fileName, geom, dims, volume, preset.id);
     setMaterial(item.material);
     setOrderType('DIRECT_PRINT');
-    router.push('/order-a');
+    router.push('/have-3d-file');
   };
 
   return (

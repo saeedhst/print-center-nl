@@ -11,7 +11,7 @@ export default function Footer() {
 
   const handleOpenSlicer = () => {
     setOrderType('DIRECT_PRINT');
-    router.push('/order-a');
+    router.push('/have-3d-file');
   };
 
   return (
@@ -34,7 +34,7 @@ export default function Footer() {
             3D Slicer
           </button>
           <Link
-            href="/order-b"
+            href="/have-idea-or-photo"
             className="hover:text-on-surface transition-colors cursor-pointer"
           >
             CAD Design

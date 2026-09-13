@@ -18,7 +18,7 @@ export default function Navbar() {
 
   const handleStartPrint = () => {
     setOrderType('DIRECT_PRINT');
-    router.push('/order-a');
+    router.push('/have-3d-file');
   };
 
   return (

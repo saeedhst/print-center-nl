@@ -11,12 +11,12 @@ export default function Hero() {
 
   const handleStart3DFile = () => {
     setOrderType('DIRECT_PRINT');
-    router.push('/order-a');
+    router.push('/have-3d-file');
   };
 
   const handleRequestDesign = () => {
     setOrderType('DESIGN_AND_PRINT');
-    router.push('/order-b');
+    router.push('/have-idea-or-photo');
   };
 
   return (

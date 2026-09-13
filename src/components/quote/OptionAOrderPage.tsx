@@ -43,7 +43,7 @@ export default function OptionAOrderPage() {
         <button
           onClick={() => {
             setOrderType('DESIGN_AND_PRINT');
-            router.push('/order-b');
+            router.push('/have-idea-or-photo');
           }}
           className="self-start sm:self-auto px-3.5 py-2 rounded bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold border border-outline transition-colors flex items-center gap-2 cursor-pointer shadow-xs"
         >
