@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
 
 export const metadata: Metadata = {
   title: 'PrintLab.nl | AMS Industrial 3D Hub (Amsterdam • Randstad)',
@@ -35,9 +37,12 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col bg-surface font-body-md text-on-surface antialiased selection:bg-primary-container selection:text-white">
-        {children}
+        <Navbar />
+        <main className="flex-1 pt-20">
+          {children}
+        </main>
+        <Footer />
       </body>
     </html>
   );
 }
-

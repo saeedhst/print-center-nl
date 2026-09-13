@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { useAppStore } from '@/lib/store';
 import { CustomerOrder, OrderStatus, DirectPrintQuote, DesignRequestQuote } from '@/types';
 import { formatEur } from '@/lib/pricing';
@@ -17,7 +18,7 @@ import {
 } from 'lucide-react';
 
 export default function OrderTable() {
-  const { orders, updateOrderStatus, setActiveView } = useAppStore();
+  const { orders, updateOrderStatus } = useAppStore();
 
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
   const [typeFilter, setTypeFilter] = useState<string>('ALL');
@@ -103,12 +104,12 @@ export default function OrderTable() {
             </p>
           </div>
 
-          <button
-            onClick={() => setActiveView('landing')}
-            className="self-start sm:self-auto px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-800 text-xs font-bold hover:bg-slate-50 transition-colors"
+          <Link
+            href="/"
+            className="self-start sm:self-auto px-4 py-2 rounded bg-white border border-outline text-slate-800 text-xs font-semibold hover:bg-slate-50 transition-colors font-label-mono-xs uppercase cursor-pointer"
           >
             &larr; Return to Store
-          </button>
+          </Link>
         </div>
 
         {/* Stats row */}

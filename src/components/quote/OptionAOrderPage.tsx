@@ -1,6 +1,8 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import FileUploadDropzone from './FileUploadDropzone';
 import ModelViewer3D from './ModelViewer3D';
 import ConfigPanel from './ConfigPanel';
@@ -9,20 +11,21 @@ import { useAppStore } from '@/lib/store';
 import { PenTool, ArrowLeft } from 'lucide-react';
 
 export default function OptionAOrderPage() {
-  const { setActiveView, setOrderType } = useAppStore();
+  const { setOrderType } = useAppStore();
+  const router = useRouter();
 
   return (
     <div className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
       {/* Top Header & Breadcrumb */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-outline-variant">
         <div>
-          <button
-            onClick={() => setActiveView('branch')}
+          <Link
+            href="/order"
             className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-on-surface transition-colors mb-2 cursor-pointer font-label-mono-xs uppercase tracking-wider"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>&larr; Switch Workflow Option</span>
-          </button>
+          </Link>
           <div className="flex items-center gap-2.5">
             <span className="text-xs font-bold text-primary bg-primary/10 border border-primary/20 px-2.5 py-0.5 rounded uppercase font-label-mono tracking-wider">
               Track 01
@@ -40,8 +43,7 @@ export default function OptionAOrderPage() {
         <button
           onClick={() => {
             setOrderType('DESIGN_AND_PRINT');
-            setActiveView('order-b');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            router.push('/order-b');
           }}
           className="self-start sm:self-auto px-3.5 py-2 rounded bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold border border-outline transition-colors flex items-center gap-2 cursor-pointer shadow-xs"
         >

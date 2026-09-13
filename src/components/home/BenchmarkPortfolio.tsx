@@ -57,8 +57,11 @@ const USE_CASES: UseCaseItem[] = [
   },
 ];
 
+import { useRouter } from 'next/navigation';
+
 export default function BenchmarkPortfolio() {
-  const { setModelGeometry, setMaterial, setActiveView, setOrderType } = useAppStore();
+  const { setModelGeometry, setMaterial, setOrderType } = useAppStore();
+  const router = useRouter();
 
   const handleSelectCase = (item: UseCaseItem) => {
     const preset = PRESET_MODELS[item.presetIndex] || PRESET_MODELS[0];
@@ -69,8 +72,7 @@ export default function BenchmarkPortfolio() {
     setModelGeometry(preset.fileName, geom, dims, volume, preset.id);
     setMaterial(item.material);
     setOrderType('DIRECT_PRINT');
-    setActiveView('order-a');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    router.push('/order-a');
   };
 
   return (

@@ -1,11 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import { Box, Lock, Mail, User, ShieldCheck, ArrowRight, ArrowLeft, KeyRound } from 'lucide-react';
 
 export default function AuthPage() {
-  const { login, setActiveView } = useAppStore();
+  const router = useRouter();
+  const { login } = useAppStore();
   const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -23,32 +26,34 @@ export default function AuthPage() {
     // Determine role (if email starts with admin or role selected is admin)
     const role = email.toLowerCase().includes('admin') || roleOption === 'admin' ? 'admin' : 'customer';
     login(email.trim(), role, fullName.trim() || undefined);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (role === 'admin') {
+      router.push('/admin');
+    } else {
+      router.push('/');
+    }
   };
 
   const handleQuickLogin = (role: 'admin' | 'customer') => {
     if (role === 'admin') {
       login('admin@printlab.nl', 'admin', 'Haarlem Studio Operations Admin');
+      router.push('/admin');
     } else {
       login('sander@studionord.nl', 'customer', 'Sander de Wit');
+      router.push('/');
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
     <div className="py-16 max-w-md mx-auto px-4 sm:px-6">
       {/* Return link */}
       <div className="mb-6">
-        <button
-          onClick={() => {
-            setActiveView('landing');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors"
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-on-surface transition-colors font-label-mono-xs uppercase tracking-wider cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Return to Store</span>
-        </button>
+          <span>&larr; Return to Store</span>
+        </Link>
       </div>
 
       <div className="rounded-3xl bg-white border border-slate-200 p-8 shadow-card space-y-6">

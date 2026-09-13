@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import { formatEur, SIMPLE_MATERIALS, DELIVERY_OPTIONS } from '@/lib/pricing';
 import { DeliverySpeedOption } from '@/types';
@@ -20,6 +22,7 @@ import {
 } from 'lucide-react';
 
 export default function CheckoutPage() {
+  const router = useRouter();
   const {
     orderType,
     fileName,
@@ -34,7 +37,6 @@ export default function CheckoutPage() {
     selectedPaymentMethod,
     setSelectedPaymentMethod,
     submitDirectOrder,
-    setActiveView,
   } = useAppStore();
 
   const [formError, setFormError] = useState<string | null>(null);
@@ -49,31 +51,33 @@ export default function CheckoutPage() {
     }
 
     setFormError(null);
-    const order = submitDirectOrder();
+    submitDirectOrder();
 
     try {
       confetti({
         particleCount: 100,
         spread: 70,
         origin: { y: 0.6 },
-        colors: ['#ea580c', '#0f172a', '#10b981', '#0284c7'],
+        colors: ['#0052ff', '#00d2ff', '#0f172a', '#10b981'],
       });
     } catch (e) {
       // ignore
     }
+
+    router.push('/confirmation');
   };
 
   return (
     <div className="py-12 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
       {/* Back Button */}
       <div>
-        <button
-          onClick={() => setActiveView('order-a')}
-          className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors"
+        <Link
+          href="/order-a"
+          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600 hover:text-on-surface transition-colors cursor-pointer font-label-mono-xs uppercase tracking-wider"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Back to 3D File Configuration</span>
-        </button>
+          <span>&larr; Back to 3D File Configuration</span>
+        </Link>
       </div>
 
       <div className="text-left space-y-1">

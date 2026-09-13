@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useRef, useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import { DESIGN_BENCHMARK_CARDS } from '@/lib/sampleData';
 import {
@@ -19,6 +21,7 @@ import {
 } from 'lucide-react';
 
 export default function CadDesignIntake() {
+  const router = useRouter();
   const {
     cadDescription,
     cadTargetDimensions,
@@ -30,7 +33,6 @@ export default function CadDesignIntake() {
     cadContactEmail,
     setCadDetails,
     submitDesignRequest,
-    setActiveView,
   } = useAppStore();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -64,23 +66,31 @@ export default function CadDesignIntake() {
 
     setFormError(null);
     submitDesignRequest();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    router.push('/confirmation');
   };
 
   return (
     <div className="py-12 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-      {/* Top Header */}
-      <div className="text-center max-w-2xl mx-auto space-y-2">
-        <span className="text-xs font-bold uppercase tracking-wider text-blue-700 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full inline-flex items-center gap-1.5">
-          <Clock className="w-3.5 h-3.5 text-blue-600" />
-          <span>Option B &bull; Custom CAD Design Service</span>
-        </span>
-        <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">
-          You Need a Design (No 3D File)
-        </h2>
-        <p className="text-sm text-slate-600">
-          Share your idea, photos, or rough sketches. Our industrial CAD engineers in Haarlem, Amsterdam &amp; Utrecht will turn it into a printable 3D model.
-        </p>
+      {/* Top Header & Breadcrumb */}
+      <div>
+        <Link
+          href="/order"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-on-surface transition-colors mb-4 cursor-pointer font-label-mono-xs uppercase tracking-wider"
+        >
+          &larr; Switch Workflow Option
+        </Link>
+        <div className="text-center max-w-2xl mx-auto space-y-2">
+          <span className="text-xs font-bold uppercase tracking-wider text-primary bg-primary/10 border border-primary/20 px-3 py-1 rounded-full inline-flex items-center gap-1.5 font-label-mono">
+            <Clock className="w-3.5 h-3.5 text-primary" />
+            <span>Track 02 &bull; Parametric CAD Design Service</span>
+          </span>
+          <h2 className="text-3xl font-bold text-on-surface tracking-tight font-display">
+            You Need a Design (No 3D File)
+          </h2>
+          <p className="text-sm text-slate-600 font-body-md">
+            Share your concept, photos, or rough sketches. Our industrial CAD engineers in Haarlem, Amsterdam &amp; Utrecht will turn it into a printable 3D model.
+          </p>
+        </div>
       </div>
 
       {/* 1. Price Guide Gallery (Benchmark Visual Cards) */}

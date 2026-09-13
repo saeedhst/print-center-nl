@@ -1,22 +1,22 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import { ArrowRight } from 'lucide-react';
 
 export default function Hero() {
-  const { setActiveView, setOrderType } = useAppStore();
+  const { setOrderType } = useAppStore();
+  const router = useRouter();
 
   const handleStart3DFile = () => {
     setOrderType('DIRECT_PRINT');
-    setActiveView('order-a');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    router.push('/order-a');
   };
 
   const handleRequestDesign = () => {
     setOrderType('DESIGN_AND_PRINT');
-    setActiveView('order-b');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    router.push('/order-b');
   };
 
   return (
@@ -89,7 +89,6 @@ export default function Hero() {
                 className="w-full h-[480px] object-cover"
                 src="https://lh3.googleusercontent.com/aida/AEtjO1Wy5Qq7iFivgbT62_Y_kQD4qwB6rMrMlMT6IQ1fN4ecyzhu1dmKXm4JcLRPLA8Kx2ylxOKSG6C2QG_enaDHewfxJ1uzOFuRiFTdo7MEufDb6KXfnKsYNkjvna9_Ulg-OP7VbAc-u18yRIXZapVCFEDUWIBmf-7FoPc0cQx7y7deWLptb3yCBXmu2IW5fzeL41ZG6BLxa35xf09_QAclej7yHD_J2CCBCTNDito6vMQeAKNS68sWaBDWUZoh"
                 onError={(e) => {
-                  // Fallback to high-contrast technical placeholder if image fails to load
                   e.currentTarget.src =
                     'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80';
                 }}
@@ -101,4 +100,3 @@ export default function Hero() {
     </section>
   );
 }
-

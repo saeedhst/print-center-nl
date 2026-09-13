@@ -1,31 +1,26 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 
 export default function Footer() {
-  const { setActiveView, setOrderType } = useAppStore();
+  const { setOrderType } = useAppStore();
+  const router = useRouter();
 
   const handleOpenSlicer = () => {
     setOrderType('DIRECT_PRINT');
-    setActiveView('order-a');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleOpenUseCases = () => {
-    setActiveView('landing');
-    setTimeout(() => {
-      document.getElementById('use-cases-section')?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
+    router.push('/order-a');
   };
 
   return (
     <footer className="w-full bg-surface border-t border-outline-variant/30 py-12 mt-auto">
       <div className="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 font-label-mono-xs text-label-mono-xs text-on-surface-variant">
         <div>
-          <span className="font-headline-sm text-headline-sm font-bold text-on-surface block mb-1">
+          <Link href="/" className="font-headline-sm text-headline-sm font-bold text-on-surface block mb-1">
             PrintLab<span className="text-primary-container">.nl</span>
-          </span>
+          </Link>
           <p className="font-body-sm text-body-sm text-on-surface-variant">
             Singel 382, Amsterdam • Mon–Fri 08:30–18:30 • orders@printlab.nl
           </p>
@@ -38,12 +33,18 @@ export default function Footer() {
           >
             3D Slicer
           </button>
-          <button
-            onClick={handleOpenUseCases}
+          <Link
+            href="/order-b"
             className="hover:text-on-surface transition-colors cursor-pointer"
           >
-            Materials
-          </button>
+            CAD Design
+          </Link>
+          <Link
+            href="/order"
+            className="hover:text-on-surface transition-colors cursor-pointer"
+          >
+            Track Options
+          </Link>
           <button
             onClick={() => alert('Privacy Policy: All uploaded CAD files are strictly confidential and automatically purged after production.')}
             className="hover:text-on-surface transition-colors cursor-pointer"
@@ -61,4 +62,3 @@ export default function Footer() {
     </footer>
   );
 }
-

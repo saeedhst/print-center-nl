@@ -1,37 +1,35 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import { UploadCloud, PenTool, ArrowRight, Sparkles, CheckCircle2, Clock } from 'lucide-react';
 
 export default function OrderBranchPoint() {
-  const { setActiveView, setOrderType } = useAppStore();
+  const { setOrderType } = useAppStore();
+  const router = useRouter();
 
   const handleSelectOptionA = () => {
     setOrderType('DIRECT_PRINT');
-    setActiveView('order-a');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    router.push('/order-a');
   };
 
   const handleSelectOptionB = () => {
     setOrderType('DESIGN_AND_PRINT');
-    setActiveView('order-b');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    router.push('/order-b');
   };
 
   return (
     <section id="order-branch-point" className="py-12 sm:py-16 bg-surface">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-6">
-          <button
-            onClick={() => {
-              setActiveView('landing');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
+          <Link
+            href="/"
             className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-on-surface transition-colors font-label-mono-xs uppercase tracking-wider cursor-pointer"
           >
             &larr; Back to Overview
-          </button>
+          </Link>
         </div>
 
         <div className="text-center max-w-2xl mx-auto mb-12">

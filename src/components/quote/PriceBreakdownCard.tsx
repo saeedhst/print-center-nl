@@ -1,17 +1,18 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import { formatEur, SIMPLE_MATERIALS, DELIVERY_OPTIONS } from '@/lib/pricing';
 import { Clock, Truck, ShieldCheck, ArrowRight, Sparkles, Scale, CheckCircle2, Zap } from 'lucide-react';
 
 export default function PriceBreakdownCard() {
+  const router = useRouter();
   const {
     priceBreakdown,
     material,
     colorOption,
     deliverySpeed,
-    setActiveView,
   } = useAppStore();
 
   const mat = SIMPLE_MATERIALS[material] || SIMPLE_MATERIALS.STANDARD;
@@ -21,8 +22,7 @@ export default function PriceBreakdownCard() {
   const estMins = priceBreakdown.estimatedPrintTimeMinutes % 60;
 
   const handleProceedToCheckout = () => {
-    setActiveView('checkout');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    router.push('/checkout');
   };
 
   return (
