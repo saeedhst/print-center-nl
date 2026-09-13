@@ -6,8 +6,9 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const query = searchParams.get('q') || '';
     const category = searchParams.get('category') || undefined;
+    const sort = (searchParams.get('sort') as 'popular' | 'downloads' | 'likes') || 'popular';
 
-    const result = await searchThingiverse(query, category);
+    const result = await searchThingiverse(query, category, sort);
     return NextResponse.json({
       success: true,
       items: result.items,
