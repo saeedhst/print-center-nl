@@ -38,11 +38,26 @@ export interface ImportUrlResponse {
   error?: string;
 }
 
+export interface ThingiverseFile {
+  name: string;
+  sizeBytes?: number;
+  format: string;
+}
+
+export interface ThingiversePrintSettings {
+  recommendedMaterial: 'PLA' | 'PETG' | 'ASA';
+  recommendedInfillPercent: number;
+  layerHeightMm: number;
+  supportsRequired: boolean;
+}
+
 export interface ThingiverseItem {
   id: number | string;
   name: string;
   url: string;
   thumbnail: string;
+  images?: string[];
+  description?: string;
   creator: {
     name: string;
     url?: string;
@@ -53,6 +68,10 @@ export interface ThingiverseItem {
   likes?: number;
   category?: string;
   fileUrl?: string;
+  files?: ThingiverseFile[];
+  printSettings?: ThingiversePrintSettings;
+  instructions?: string;
+  tags?: string[];
   defaultDimensions?: { x: number; y: number; z: number };
   presetId?: string;
 }

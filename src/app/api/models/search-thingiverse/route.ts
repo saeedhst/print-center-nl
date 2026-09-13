@@ -7,8 +7,9 @@ export async function GET(req: NextRequest) {
     const query = searchParams.get('q') || '';
     const category = searchParams.get('category') || undefined;
     const sort = (searchParams.get('sort') as 'popular' | 'downloads' | 'likes') || 'popular';
+    const commercialOnly = searchParams.get('commercialOnly') === 'true';
 
-    const result = await searchThingiverse(query, category, sort);
+    const result = await searchThingiverse(query, category, sort, commercialOnly);
     return NextResponse.json({
       success: true,
       items: result.items,
