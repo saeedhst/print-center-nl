@@ -51,12 +51,6 @@ export default function Footer() {
           >
             Catalog
           </Link>
-          <Link
-            href="/custom-design"
-            className="hover:text-on-surface transition-colors cursor-pointer"
-          >
-            CAD Design
-          </Link>
           <button
             onClick={() => alert('Privacy Policy: All uploaded CAD files are strictly confidential and automatically purged after production.')}
             className="hover:text-on-surface transition-colors cursor-pointer"
